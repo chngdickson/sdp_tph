@@ -12,7 +12,7 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
     -p https://github.com/zsh-users/zsh-autosuggestions \
     -p https://github.com/zsh-users/zsh-completions \
     -p https://github.com/zsh-users/zsh-syntax-highlighting
-
+RUN git config --global url.https://.insteadOf git://
 
 # Install python
 RUN apt-get install python3-pip -y
@@ -20,7 +20,7 @@ RUN pip3 install --upgrade pip
 
 # Install from directory
 WORKDIR /root
-RUN git clone https://github.com/chngdickson/sdp_tph.git
+RUN git clone --recursive https://github.com/chngdickson/sdp_tph.git
 
 # RUN pip install laspy
 # ENTRYPOINT []

@@ -1,6 +1,6 @@
 [submodule "submodules/CSF"]
 	path = submodules/CSF
-	url = git@github.com:chngdickson/CSF.git
+	url = https://github.com/chngdickson/CSF.git
 [submodule "submodules/PCTM"]
 	path = submodules/PCTM
-	url = git@github.com:chngdickson/PointCloud_Tree_Modelling.git
+	url = https://github.com/chngdickson/PointCloud_Tree_Modelling.git
