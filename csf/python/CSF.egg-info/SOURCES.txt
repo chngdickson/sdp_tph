@@ -1,0 +1,14 @@
+CSF.py
+CSF_wrap.cxx
+setup.py
+../src/CSF.cpp
+../src/Cloth.cpp
+../src/Particle.cpp
+../src/Rasterization.cpp
+../src/XYZReader.cpp
+../src/c2cdist.cpp
+../src/point_cloud.cpp
+CSF.egg-info/PKG-INFO
+CSF.egg-info/SOURCES.txt
+CSF.egg-info/dependency_links.txt
+CSF.egg-info/top_level.txt
