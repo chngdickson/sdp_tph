@@ -21,7 +21,7 @@ RUN pip3 install --upgrade pip
 # Install from directory
 WORKDIR /root
 RUN git clone --recursive https://github.com/chngdickson/sdp_tph.git
-
+ENTRYPOINT []
 # RUN pip install laspy
 # ENTRYPOINT []
 # CMD []
