@@ -219,108 +219,108 @@ def main(path_directory, pcd_name, input_file_type):
     
     coords_hs = []
     ex_w, ex_h = (dim*side_view_tree_width for dim in side_view_img_size)
+    print(ex_w, ex_h)
+    # with tqdm(
+    #     crop_pcd_to_many(
+    #         pcd = pcd,grd_pcd = grd,
+    #         coords = coordinates,
+    #         w_lin_pcd = (w_arr_pcd,w_incre_pcd),
+    #         h_lin_pcd = (h_arr_pcd,h_incre_pcd),
+    #         expand_x_y=[ex_h,ex_w]
+    #     ), 
+    #     unit ="n", 
+    #     bar_format ='{desc:<16}{percentage:3.0f}%|{bar:25}{r_bar}'
+    #     ) as t:
+    #     for index, value in enumerate(t):
+    #         t.set_description(f"Processing Trees")
+    #         tree, _, x,y = value
+    #         h, im , confi = get_h_from_each_tree_slice(
+    #             tree = tree,
+    #             model_short = sideViewModel_short,
+    #             model_tall = sideViewModel_tall,
+    #             img_size = side_view_img_size, 
+    #             stepsize = side_view_step_size,
+    #             img_dir = f"{sideViewOut}/{pcd_name}_{index}_",
+    #             gen_undetected_img = False,
+    #             img_with_h = True,
+    #             min_no_points = min_points_per_tree
+    #             )
+    #         coords_hs.append((x,y,h,index,im, confi)) if h > 0 else None
+    # del sideViewModel_short, pcd, grd
+    
+    
+    # # Removing Duplicates
+    # coordinates = np.array(coords_hs.copy())[:,0:2]
+    # values, cluster_id = np.unique(coordinates, axis=0, return_inverse=True)
 
-    with tqdm(
-        crop_pcd_to_many(
-            pcd = pcd,grd_pcd = grd,
-            coords = coordinates,
-            w_lin_pcd = (w_arr_pcd,w_incre_pcd),
-            h_lin_pcd = (h_arr_pcd,h_incre_pcd),
-            expand_x_y=[ex_w,ex_w]
-        ), 
-        unit ="n", 
-        bar_format ='{desc:<16}{percentage:3.0f}%|{bar:25}{r_bar}'
-        ) as t:
-        for index, value in enumerate(t):
-            t.set_description(f"Processing Trees")
-            tree, _, x,y = value
-            h, im , confi = get_h_from_each_tree_slice(
-                tree = tree,
-                model_short = sideViewModel_short,
-                model_tall = sideViewModel_tall,
-                img_size = side_view_img_size, 
-                stepsize = side_view_step_size,
-                img_dir = f"{sideViewOut}/{pcd_name}_{index}_",
-                gen_undetected_img = False,
-                img_with_h = True,
-                min_no_points = min_points_per_tree
-                )
-            coords_hs.append((x,y,h,index,im, confi)) if h > 0 else None
-    del sideViewModel_short, pcd, grd
+    # clustered_coord_hs = []
+    # for i in range(max(cluster_id)):
+    #     this_cluster = np.where(cluster_id==i)[0]
+    #     n = len(this_cluster)
+    #     if n < 2:
+    #         clustered_coord_hs.append(coords_hs[this_cluster[0]])
+    #     else:
+    #         this_cluster_coord_hs = [coords_hs[ind] for ind in this_cluster]
+    #         clustered_coord_hs.append(this_cluster_coord_hs[np.argmax(np.array(this_cluster_coord_hs.copy())[:,-1])])
+    # coords_hs = clustered_coord_hs
+    
+    # ####################################################
+    # ####### END Generate Height from Each Tree #########
+    # ####################################################
     
     
-    # Removing Duplicates
-    coordinates = np.array(coords_hs.copy())[:,0:2]
-    values, cluster_id = np.unique(coordinates, axis=0, return_inverse=True)
+    # ####################################################
+    # ########### Step 5: Miscellaneous Work #############
+    # ####################################################
+    # logger.info("Step 5: Miscellaneous Finishing touches")
+    
+    # # Create dataframe
+    # df = pd.DataFrame(coords_hs, columns=["x","y","h","index","numpy_image","confidence"])
+    # #df.to_csv(csvOut)
+    # del coords_hs
+    
+    # # Draw heights of Side View
+    # logger.info("Step 5.1: Generate Images for Side View")
+    # for i, side_img in enumerate(df["numpy_image"]):
+    #     side_img = img_b64_to_arr(side_img)
+    #     cv2.imwrite(f"{sideViewOut}/{pcd_name}_{i}_.png", side_img)
+    
+    
+    # # Draw Height on TOp View
+    # def draw_height_on_coord(img, x_y_h:np.ndarray, on_left:str="tape"): #(xc,yc,confidence,label)
+    #     img = img.copy()
+    #     if not x_y_h.size:
+    #         return img
+    #     red = (255,0,0)
+    #     color = red
+    #     font = cv2.FONT_HERSHEY_SIMPLEX
+    #     for stuff in x_y_h:
+    #         x,y,h,index = int(stuff[0]), int(stuff[1]), stuff[2], stuff[3]
+    #         img = cv2.circle(img,(x,y), 1, color,5)
+    #         img = cv2.putText(img, f"{h:.1f}", (x,y),font, 0.7,red,2,cv2.LINE_AA)
+    #         img = cv2.putText(img, f"{int(index)}", (x-16,y-20),font, 0.7,red,2,cv2.LINE_AA)
+    #     # Writing image name
+    #     img = cv2.putText(img, on_left, (50,50), font, 2, red, 2, cv2.LINE_AA)
+    #     return img
 
-    clustered_coord_hs = []
-    for i in range(max(cluster_id)):
-        this_cluster = np.where(cluster_id==i)[0]
-        n = len(this_cluster)
-        if n < 2:
-            clustered_coord_hs.append(coords_hs[this_cluster[0]])
-        else:
-            this_cluster_coord_hs = [coords_hs[ind] for ind in this_cluster]
-            clustered_coord_hs.append(this_cluster_coord_hs[np.argmax(np.array(this_cluster_coord_hs.copy())[:,-1])])
-    coords_hs = clustered_coord_hs
-    
-    ####################################################
-    ####### END Generate Height from Each Tree #########
-    ####################################################
-    
-    
-    ####################################################
-    ########### Step 5: Miscellaneous Work #############
-    ####################################################
-    logger.info("Step 5: Miscellaneous Finishing touches")
-    
-    # Create dataframe
-    df = pd.DataFrame(coords_hs, columns=["x","y","h","index","numpy_image","confidence"])
-    #df.to_csv(csvOut)
-    del coords_hs
-    
-    # Draw heights of Side View
-    logger.info("Step 5.1: Generate Images for Side View")
-    for i, side_img in enumerate(df["numpy_image"]):
-        side_img = img_b64_to_arr(side_img)
-        cv2.imwrite(f"{sideViewOut}/{pcd_name}_{i}_.png", side_img)
-    
-    
-    # Draw Height on TOp View
-    def draw_height_on_coord(img, x_y_h:np.ndarray, on_left:str="tape"): #(xc,yc,confidence,label)
-        img = img.copy()
-        if not x_y_h.size:
-            return img
-        red = (255,0,0)
-        color = red
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        for stuff in x_y_h:
-            x,y,h,index = int(stuff[0]), int(stuff[1]), stuff[2], stuff[3]
-            img = cv2.circle(img,(x,y), 1, color,5)
-            img = cv2.putText(img, f"{h:.1f}", (x,y),font, 0.7,red,2,cv2.LINE_AA)
-            img = cv2.putText(img, f"{int(index)}", (x-16,y-20),font, 0.7,red,2,cv2.LINE_AA)
-        # Writing image name
-        img = cv2.putText(img, on_left, (50,50), font, 2, red, 2, cv2.LINE_AA)
-        return img
+    # new_pd = np.asarray([df.x, df.y, df.h, df.index]).transpose()
+    # new_pd = scale_coord(new_pd, (1/topViewStepsize, 1/topViewStepsize), (-xmin/topViewStepsize,ymax/topViewStepsize))
+    # img_lidar = draw_height_on_coord(non_ground_img, new_pd, f"Lidar {pcd_name}")
 
-    new_pd = np.asarray([df.x, df.y, df.h, df.index]).transpose()
-    new_pd = scale_coord(new_pd, (1/topViewStepsize, 1/topViewStepsize), (-xmin/topViewStepsize,ymax/topViewStepsize))
-    img_lidar = draw_height_on_coord(non_ground_img, new_pd, f"Lidar {pcd_name}")
-
-    cv2.imwrite(f"{topViewOut}/{pcd_name}_lidar.png", img_lidar)
+    # cv2.imwrite(f"{topViewOut}/{pcd_name}_lidar.png", img_lidar)
 
 
-    # Save Dataframe with Mean
-    df2 = pd.DataFrame([["Mean_height", df.h.mean(axis=0)]], columns=["x","h"])
-    df3 = pd.DataFrame([["Confidence %", df.confidence.mean(axis=0)]], columns=["x","h"])
-    df = df[["x","y","h","index","numpy_image"]]
-    df  = pd.concat([df, df3, df2], ignore_index=True)
-    df.to_csv(csvOut)
+    # # Save Dataframe with Mean
+    # df2 = pd.DataFrame([["Mean_height", df.h.mean(axis=0)]], columns=["x","h"])
+    # df3 = pd.DataFrame([["Confidence %", df.confidence.mean(axis=0)]], columns=["x","h"])
+    # df = df[["x","y","h","index","numpy_image"]]
+    # df  = pd.concat([df, df3, df2], ignore_index=True)
+    # df.to_csv(csvOut)
     
-    ####################################################
-    ########### END 5 : Miscellaneous Work #############
-    ####################################################
-    logger.info("Done!")
+    # ####################################################
+    # ########### END 5 : Miscellaneous Work #############
+    # ####################################################
+    # logger.info("Done!")
     
 if __name__ == '__main__':
     logger.info("Done Loading Libraries\n")
