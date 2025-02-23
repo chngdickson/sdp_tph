@@ -33,7 +33,7 @@ def visualize_tree_from_coord(grd_pcd, coord:tuple, radius_expand:int=3, zminmax
     max_bound = (xc+ex, yc+ex, 15)
     bbox = o3d.geometry.AxisAlignedBoundingBox(min_bound=min_bound, max_bound=max_bound)
     tree = grd_pcd.crop(bbox)
-    o3d.visualization.draw_geometries(tree(device=open3d.core.Device("CPU")))
+    o3d.visualization.draw_geometries(tree(device=open3d.core.Device("CPU:0")))
     
 class TreeGen():
     def __init__(self, yml_data, sideViewOut, pcd_name):
