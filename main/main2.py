@@ -207,19 +207,19 @@ def main(path_directory, pcd_name, input_file_type):
     logger.info("Step 4. Generate Height ")
     
     # Yaml Params
-    side_view_model_pth = yml_data["yolov5"]["sideView"]["model_pth"]
-    side_view_step_size = yml_data["yolov5"]["sideView"]["stepsize"]
-    side_view_tree_width = yml_data["yolov5"]["sideView"]["width_tree"]
-    side_view_img_size = tuple(yml_data["yolov5"]["sideView"]["imgSize"])
-    side_view_img_size_tall = tuple(yml_data["yolov5"]["sideView"]["imgSizeTall"])
-    min_points_per_tree = yml_data["yolov5"]["sideView"]["minNoPoints"]
+    # side_view_model_pth = yml_data["yolov5"]["sideView"]["model_pth"]
+    # side_view_step_size = yml_data["yolov5"]["sideView"]["stepsize"]
+    # side_view_tree_width = yml_data["yolov5"]["sideView"]["width_tree"]
+    # side_view_img_size = tuple(yml_data["yolov5"]["sideView"]["imgSize"])
+    # side_view_img_size_tall = tuple(yml_data["yolov5"]["sideView"]["imgSizeTall"])
+    # min_points_per_tree = yml_data["yolov5"]["sideView"]["minNoPoints"]
 
-    # Init SideViewYolo Model
-    sideViewModel_short = Detect(yolov5_folder_pth, side_view_model_pth, img_size=side_view_img_size)
-    sideViewModel_tall = Detect(yolov5_folder_pth, side_view_model_pth, img_size=side_view_img_size_tall)
+    # # Init SideViewYolo Model
+    # sideViewModel_short = Detect(yolov5_folder_pth, side_view_model_pth, img_size=side_view_img_size)
+    # sideViewModel_tall = Detect(yolov5_folder_pth, side_view_model_pth, img_size=side_view_img_size_tall)
     
-    coords_hs = []
-    ex_w, ex_h = (dim*side_view_tree_width for dim in side_view_img_size)
+    # coords_hs = []
+    # ex_w, ex_h = (dim*side_view_tree_width for dim in side_view_img_size)
     get_tree_from_many(non_grd, coordinates)
 
 if __name__ == '__main__':
