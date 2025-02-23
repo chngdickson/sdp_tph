@@ -7,6 +7,7 @@ import numpy as np
 import open3d as o3d
 from tqdm import tqdm
 import math
+import statistics
 """
 1. Bounding Box
 2. Perform object detection
@@ -74,7 +75,7 @@ class TreeGen():
                     coords_x_bool = (coord[0] >= min_x) & (coord[0] <= max_x)
                     coords_y_bool = (-coord[1] >= min_y) & (-coord[1] <= max_y)
                     
-                    new_x, new_y = math.mean([min_x, max_x]), math.mean([min_y, max_y])
+                    new_x, new_y = statistics.mean([min_x, max_x]), statistics.mean([min_y, max_y])
                     new_coord = (new_x, new_y)
                     if coords_x_bool & coords_y_bool:
                         section_tree_pcd = pcd.crop(open3d.geometry.AxisAlignedBoundingBox(min_bound=minbound,max_bound=maxbound))
