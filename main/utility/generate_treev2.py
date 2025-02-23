@@ -63,7 +63,7 @@ def regenerate_Tree(grd_pcd, center_coord:tuple, radius_expand:int=5, zminmax:li
     max_bound = (xc+ex, yc+ex, zmax)
     bbox = o3d.geometry.AxisAlignedBoundingBox(min_bound=min_bound, max_bound=max_bound)
     tree_with_gnd = grd_pcd.crop(bbox)
-    distances = np.linalg.norm(np.asarray(non_grd.points)[:,0:2] - np.array([xc, yc]), axis=1)
+    distances = np.linalg.norm(np.asarray(tree_with_gnd.points)[:,0:2] - np.array([xc, yc]), axis=1)
     tree_with_gnd = tree_with_gnd.select_by_index(np.where(distances<=radius_expand)[0])
     grd, non_grd = csf_py(
         tree_with_gnd, 
