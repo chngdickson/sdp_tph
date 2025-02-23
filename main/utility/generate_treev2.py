@@ -2,7 +2,7 @@ import open3d as o3d
 import tqdm
 # Under the assumption that the library works
 def tree_from_coord(non_grd, coord:tuple, radius_expand:int=3):
-    xc, yc = coord[0], coord[1]
+    xc, yc = coord[0], -coord[1]
     ex = radius_expand/2
     min_bound = (xc-ex, yc-ex, -1)
     max_bound = (xc+ex, yc+ex, 15)
