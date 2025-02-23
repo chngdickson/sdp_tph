@@ -22,6 +22,6 @@ yolov5:
     axis    : "x"
     imgSize : [320, 768]
     model_pth : "model_weights/v12_side.pt"
-    stepsize : 0.02
+    stepsize : 0.1
     minNoPoints : 1500
     imgSizeTall : [320, 1280]
