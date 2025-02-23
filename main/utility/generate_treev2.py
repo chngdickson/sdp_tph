@@ -64,7 +64,7 @@ class TreeGen():
             coord_list = []
             
             # Split each coord to multi-sections and find the one with highest confidence
-            h_loop = tqdm(h_arr_pcd[:-1] )
+            h_loop = h_arr_pcd[:-1] 
             w_loop = w_arr_pcd[:-1]
             for i, h in enumerate(h_loop):
                 for j,w in enumerate(w_loop):
@@ -80,7 +80,7 @@ class TreeGen():
                     if coords_x_bool & coords_y_bool:
                         section_tree_pcd = pcd.crop(open3d.geometry.AxisAlignedBoundingBox(min_bound=minbound,max_bound=maxbound))
                         section_grd_pcd = grd_pcd.crop(open3d.geometry.AxisAlignedBoundingBox(min_bound=minbound,max_bound=maxbound))
-                        almost_tree = get_tree_from_coord(pcd, grd_pcd, [new_x, new_y], expand_x_y=[self.ex_w,self.ex_w], expand_z=[z_min, z_max])
+                        almost_tree = get_tree_from_coord(pcd, grd_pcd, coord, expand_x_y=[self.ex_w,self.ex_w], expand_z=[z_min, z_max])
                         h, im , confi = get_h_from_each_tree_slice(
                             tree = almost_tree,
                             model_short = self.obj_det_short,
