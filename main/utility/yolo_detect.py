@@ -6,7 +6,7 @@ import torchvision
 
 class Detect():
     def __init__(self, yolo_folder ,model_weight_path, img_size) -> None:
-        self.model = torch.hub.load(yolo_folder,'custom', path=model_weight_path,verbose=False,force_reload=False,skip_validation=True,source='local')
+        self.model = torch.hub.load(yolo_folder,'custom', path=model_weight_path,verbose=False,force_reload=True,skip_validation=True,source='local')
         self.stride = self.model.stride
         self.is_model_exist = self.model.pt
         self.names = self.model.names
