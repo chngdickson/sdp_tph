@@ -49,6 +49,9 @@ def visualize_tree_from_coord(grd_pcd, coord:tuple, radius_expand:int=3, zminmax
     xyz = np.asarray(non_grd.points)
     print(xyz.shape)
     centroid, label_ = kmeans2(xyz[:,0:2],k=1)
+    print(centroid)
+    xnew,ynew = centroid
+    ynew*=-1
     
     o3d.cuda.pybind.visualization.draw_geometries([tree_with_gnd])
     visualize_tree_from_coord(grd_pcd, centroid, radius_expand=3,zminmax=zminmax)
