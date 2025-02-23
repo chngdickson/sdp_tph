@@ -42,9 +42,10 @@ def visualize_tree_from_coord(grd_pcd, coord:tuple, radius_expand:int=3, zminmax
         tree_with_gnd, 
         return_non_ground = "both", 
         bsloopSmooth = True, 
-        cloth_res = 18.0, 
+        cloth_res = 15.0, 
         threshold= 2.0, 
-        rigidness=1
+        rigidness=2,
+        iterations=1000
     )
     xyz = np.asarray(non_grd.points)
     z_min = xyz[:,2].min()
