@@ -25,14 +25,15 @@ def crop_tree_for_obj_det():
 
 
 # Under the assumption that the library works
-def visualize_tree_from_coord(grd_pcd, coord:tuple, radius_expand:int=3):
+def visualize_tree_from_coord(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:list=[-15,15]):
     xc, yc = coord[0], -coord[1]
     ex = radius_expand
+    zmin, zmax = zminmax
     min_bound = (xc-ex, yc-ex, -15)
     max_bound = (xc+ex, yc+ex, 15)
     bbox = o3d.geometry.AxisAlignedBoundingBox(min_bound=min_bound, max_bound=max_bound)
     tree = grd_pcd.crop(bbox)
-    o3d.visualization.draw_geometries(tree)
+    o3d.visualization.draw_geometries(tree(device=open3d.core.Device("CPU")))
     
 class TreeGen():
     def __init__(self, yml_data, sideViewOut, pcd_name):
@@ -101,4 +102,4 @@ class TreeGen():
                 continue
             else:
                 print("h_detected",h>0)
-                visualize_tree_from_coord(pcd,coord_list[0],3)
+                visualize_tree_from_coord(pcd,coord_list[0],3, [z_min, z_max ])
