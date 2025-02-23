@@ -19,7 +19,7 @@ import torch
 import torch.nn as nn
 import yaml
 from PIL import Image
-from torch.cuda import amp
+from torch import amp
 
 from utils.datasets import exif_transpose, letterbox
 from utils.general import (LOGGER, check_requirements, check_suffix, check_version, colorstr, increment_path,
