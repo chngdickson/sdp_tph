@@ -42,7 +42,7 @@ def main(path_directory, pcd_name, input_file_type):
     ######## 1 File Generation from PCD #############
     #################################################
     logger.info("Step 1: Reading pcd file...")
-    
+    print("is there any issue?")
     # Load Yaml
     with open("config/config.yaml","r") as ymlfile:
         yml_data = yaml.load(ymlfile, Loader = yaml.FullLoader)
