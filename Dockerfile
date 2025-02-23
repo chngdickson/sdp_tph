@@ -101,7 +101,10 @@ RUN cmake -DCMAKE_BUILD_TYPE=Release .. && make
 WORKDIR /root
 RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash && apt-get install -y git-lfs
 WORKDIR /root/sdp_tph/main
-RUN git fetch && git checkout testings && git pull
+RUN git fetch && git checkout testings && git lfs pull && git pull
+
+RUN mkdir -p /usr/local/app/bin && \
+    cp /root/AdTree/Release/bin/AdTree /usr/local/app/bin/AdTree
 ENTRYPOINT []
 # RUN pip install laspy
 # ENTRYPOINT []
