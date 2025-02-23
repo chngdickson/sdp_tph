@@ -3,7 +3,7 @@ import tqdm
 # Under the assumption that the library works
 def tree_from_coord(non_grd, coord:tuple, radius_expand:int=3):
     xc, yc = coord[0], -coord[1]
-    ex = radius_expand/2
+    ex = radius_expand
     min_bound = (xc-ex, yc-ex, -1)
     max_bound = (xc+ex, yc+ex, 15)
     bbox = o3d.geometry.AxisAlignedBoundingBox(min_bound=min_bound, max_bound=max_bound)
