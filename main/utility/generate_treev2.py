@@ -42,10 +42,13 @@ def visualize_tree_from_coord(grd_pcd, coord:tuple, radius_expand:int=3, zminmax
         tree_with_gnd, 
         return_non_ground = "both", 
         bsloopSmooth = True, 
-        cloth_res = 15.0, 
+        cloth_res = 18.0, 
         threshold= 2.0, 
         rigidness=1
     )
+    xyz = np.asarray(non_grd.points)
+    z_min = xyz[:,2].min()
+    non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min+3)[0])
     xyz = np.asarray(non_grd.points)
     print(xyz.shape)
     centroid, label_ = kmeans2(xyz[:,0:2],k=1)
