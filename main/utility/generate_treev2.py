@@ -65,7 +65,7 @@ class TreeGen():
             
             # Split each coord to multi-sections and find the one with highest confidence
             h_loop = tqdm(h_arr_pcd[:-1] )
-            w_loop = tqdm(w_arr_pcd[:-1])
+            w_loop = w_arr_pcd[:-1]
             for i, h in enumerate(h_loop):
                 for j,w in enumerate(w_loop):
                     min_x, max_x = w, w+w_increment+w_increment/4
@@ -100,5 +100,5 @@ class TreeGen():
             if n_detected <= 0:
                 continue
             else:
-                
+                print("h_detected",h>0)
                 visualize_tree_from_coord(pcd,coord_list[0],3)
