@@ -30,7 +30,7 @@ def crop_tree_for_obj_det():
 
 
 # Under the assumption that the library works
-def visualize_tree_from_coord(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:list=[-15,15]):
+def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:list=[-15,15]):
     xc, yc = coord[0], -coord[1]
     ex = radius_expand
     zmin, zmax = zminmax
@@ -51,15 +51,30 @@ def visualize_tree_from_coord(grd_pcd, coord:tuple, radius_expand:int=3, zminmax
     z_min = xyz[:,2].min()
     non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min+3)[0])
     xyz = np.asarray(non_grd.points)
-    print(xyz.shape)
     centroid, label_ = kmeans2(xyz[:,0:2],k=1)
-    print(centroid)
     xnew,ynew = centroid[0]
-    ynew*=-1
-    
-    o3d.cuda.pybind.visualization.draw_geometries([tree_with_gnd])
-    o3d.cuda.pybind.visualization.draw_geometries([non_grd])
-    visualize_tree_from_coord(grd_pcd, [xnew,ynew], radius_expand=3,zminmax=zminmax)
+    return (xnew, -ynew)
+
+def regenerate_Tree(grd_pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[-15,15]):
+    xc, yc = center_coord[0], -center_coord[1]
+    ex = radius_expand
+    zmin, zmax = zminmax
+    min_bound = (xc-ex, yc-ex, zmin)
+    max_bound = (xc+ex, yc+ex, zmax)
+    bbox = o3d.geometry.AxisAlignedBoundingBox(min_bound=min_bound, max_bound=max_bound)
+    tree_with_gnd = grd_pcd.crop(bbox)
+    grd, non_grd = csf_py(
+        tree_with_gnd, 
+        return_non_ground = "both", 
+        bsloopSmooth = True, 
+        cloth_res = 15.0, 
+        threshold= 2.0, 
+        rigidness=2,
+        iterations=1000
+    )    
+    distances = np.linalg.norm(np.asarray(non_grd.points)[:,0:2] - center_coord, axis=1)
+    non_grd = non_grd.select_by_index(np.where(distances<=radius_expand)[0])
+    o3d.cuda.pybind.visualization([non_grd])
     
 class TreeGen():
     def __init__(self, yml_data, sideViewOut, pcd_name):
@@ -89,6 +104,7 @@ class TreeGen():
             n_detected = 0
             confi_list = []
             coord_list = []
+            h_im_list = []
             
             # Split each coord to multi-sections and find the one with highest confidence
             h_loop = h_arr_pcd[:-1] 
@@ -120,12 +136,15 @@ class TreeGen():
                             min_no_points = self.min_points_per_tree
                             )
                         if h > 0:
-                            confi_list.append([confi])
+                            confi_list.append(confi)
                             coord_list.append(coord)
+                            h_im_list.append(im)
                             n_detected += 1
                         
             if n_detected <= 0:
                 continue
             else:
                 print("h_detected",h>0)
-                visualize_tree_from_coord(pcd,coord_list[0],3, [z_min, z_max])
+                # Perform Operations
+                new_coord = find_centroid_from_Trees(pcd,coord_list[0],3, [z_min, z_max])
+                regenerate_Tree(pcd, new_coord, 5, [z_min, z_max])
