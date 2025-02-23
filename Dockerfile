@@ -84,6 +84,24 @@ RUN cmake -DCMAKE_INSTALL_PREFIX=/open3d \
              ..
 RUN make install && ldconfig && make -j$(nproc) && make install-pip-package     
 WORKDIR /root/sdp_tph/main
+
+
+# Install AdTree
+RUN python3 -m pip uninstall -y torch torchvision torchaudio 
+RUN python3 -m pip install --no-cache-dir torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+WORKDIR /root
+RUN apt-get update -y && apt-get install --no-install-recommends -y build-essential cmake-gui mesa-utils xorg-dev libglu1-mesa-dev libboost-all-dev && rm -rf /var/lib/apt/lists/*
+RUN cp -R /root/sdp_tph/submodules/PCTM/AdTree/ /root/AdTree
+WORKDIR /root/AdTree
+RUN mkdir -p /root/AdTree/Release
+WORKDIR /root/AdTree/Release
+RUN cmake -DCMAKE_BUILD_TYPE=Release .. && make
+
+# Make sure LFS has all the files
+WORKDIR /root
+RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash && apt-get install -y git-lfs
+WORKDIR /root/sdp_tph/main
+RUN git fetch && git checkout testings && git pull
 ENTRYPOINT []
 # RUN pip install laspy
 # ENTRYPOINT []

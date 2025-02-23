@@ -27,3 +27,9 @@ dschng/tph /bin/bash
 ```bash
 python3 main.py /root/pcds/ p01 .las
 ```
+
+Pushing with lfs
+```bash
+
+git-lfs push origin testings
+git push
