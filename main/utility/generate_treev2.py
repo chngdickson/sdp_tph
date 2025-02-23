@@ -8,10 +8,15 @@ import open3d as o3d
 from tqdm import tqdm
 import math
 import statistics
+from scipy.cluster.vq import kmeans2
+from sklearn.cluster import DBSCAN
+from .csf_py import csf_py
 """
-1. Bounding Box
-2. Perform object detection
-3. Do cylinder removal if object detection is successful
+1. Bounding Box Done
+2. Perform object detection Done
+3. Do stuff if object detection is successful
+    - CSF Filter
+    - Find the center via clustering of points x,y
     - x,y radius removal
 4. CSF filter
 5. Reconstruct Tree
@@ -32,8 +37,21 @@ def visualize_tree_from_coord(grd_pcd, coord:tuple, radius_expand:int=3, zminmax
     min_bound = (xc-ex, yc-ex, zmin)
     max_bound = (xc+ex, yc+ex, zmax)
     bbox = o3d.geometry.AxisAlignedBoundingBox(min_bound=min_bound, max_bound=max_bound)
-    tree = grd_pcd.crop(bbox)
-    o3d.cuda.pybind.visualization.draw_geometries([tree])
+    tree_with_gnd = grd_pcd.crop(bbox)
+    grd, non_grd = csf_py(
+        tree_with_gnd, 
+        return_non_ground = "both", 
+        bsloopSmooth = True, 
+        cloth_res = 10.0, 
+        threshold= 2.0, 
+        rigidness=1
+    )
+    xyz = np.asarray(non_grd.points)
+    print(xyz.shape)
+    centroid, label_ = kmeans2(xyz[:,0:2],k=1)
+    
+    o3d.cuda.pybind.visualization.draw_geometries([tree_with_gnd])
+    visualize_tree_from_coord(grd_pcd, centroid, radius_expand=3,zminmax=zminmax)
     
 class TreeGen():
     def __init__(self, yml_data, sideViewOut, pcd_name):
