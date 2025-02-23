@@ -9,7 +9,8 @@ import numpy as np
 from utility.yolo_detect import Detect
 from utility.pcd2img import pcd2img_np
 from utility.get_coords import scale_pred_to_xy_point_cloud, draw_coord_on_img, scale_coord, get_strides
-from utility.generate_tree import get_h_from_each_tree_slice, crop_pcd_to_many
+# from utility.generate_tree import get_h_from_each_tree_slice, crop_pcd_to_many
+from utility.generate_treev2 import get_tree_from_many
 from utility.csf_py import csf_py
 from utility.encode_decode import img_b64_to_arr
 
@@ -194,7 +195,7 @@ def main(path_directory, pcd_name, input_file_type):
 
     # 4. Clear unused memory
     del topViewModel
-    del non_grd
+    # del non_grd
     ####################################################
     ##### END  Get Coordinates from Top View ###########
     ####################################################
@@ -219,4 +220,10 @@ def main(path_directory, pcd_name, input_file_type):
     
     coords_hs = []
     ex_w, ex_h = (dim*side_view_tree_width for dim in side_view_img_size)
-    print(ex_w, ex_h)
+    get_tree_from_many(non_grd, coordinates)
+
+if __name__ == '__main__':
+    logger.info("Done Loading Libraries\n")
+    logger.info(f"Current dir: [{os.getcwd()}]")
+    main(*sys.argv[1:])
+    
