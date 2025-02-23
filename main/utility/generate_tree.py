@@ -78,7 +78,7 @@ def crop_pcd_to_many(pcd, grd_pcd, coords, w_lin_pcd, h_lin_pcd, expand_x_y:list
         for w in tqdm(w_arr_pcd[:-1], leave=bool(i==2)):
             # Get coordinates that are in the current section
             # Slightly expand the max increment in order to find all the possible trees
-            min_x, max_x= w, w+w_increment+w_increment/4
+            min_x, max_x = w, w+w_increment+w_increment/4
             min_y, max_y = h, h+h_increment+h_increment/4 
             minbound = (min_x, min_y, z_min)
             maxbound = (max_x, max_y, z_max)

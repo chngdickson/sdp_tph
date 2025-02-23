@@ -10,7 +10,7 @@ from utility.yolo_detect import Detect
 from utility.pcd2img import pcd2img_np
 from utility.get_coords import scale_pred_to_xy_point_cloud, draw_coord_on_img, scale_coord, get_strides
 # from utility.generate_tree import get_h_from_each_tree_slice, crop_pcd_to_many
-from utility.generate_treev2 import get_tree_from_many
+from utility.generate_treev2 import TreeGen
 from utility.csf_py import csf_py
 from utility.encode_decode import img_b64_to_arr
 
@@ -195,7 +195,7 @@ def main(path_directory, pcd_name, input_file_type):
 
     # 4. Clear unused memory
     del topViewModel
-    # del non_grd
+    del non_grd
     ####################################################
     ##### END  Get Coordinates from Top View ###########
     ####################################################
@@ -207,20 +207,8 @@ def main(path_directory, pcd_name, input_file_type):
     logger.info("Step 4. Generate Height ")
     
     # Yaml Params
-    # side_view_model_pth = yml_data["yolov5"]["sideView"]["model_pth"]
-    # side_view_step_size = yml_data["yolov5"]["sideView"]["stepsize"]
-    # side_view_tree_width = yml_data["yolov5"]["sideView"]["width_tree"]
-    # side_view_img_size = tuple(yml_data["yolov5"]["sideView"]["imgSize"])
-    # side_view_img_size_tall = tuple(yml_data["yolov5"]["sideView"]["imgSizeTall"])
-    # min_points_per_tree = yml_data["yolov5"]["sideView"]["minNoPoints"]
-
-    # # Init SideViewYolo Model
-    # sideViewModel_short = Detect(yolov5_folder_pth, side_view_model_pth, img_size=side_view_img_size)
-    # sideViewModel_tall = Detect(yolov5_folder_pth, side_view_model_pth, img_size=side_view_img_size_tall)
-    
-    # coords_hs = []
-    # ex_w, ex_h = (dim*side_view_tree_width for dim in side_view_img_size)
-    get_tree_from_many(non_grd, coordinates)
+    tree_gen = TreeGen(yml_data, sideViewOut, pcd_name)
+    tree_gen.process_each_coord(pcd, grd, coordinates, (w_arr_pcd,w_incre_pcd), (h_arr_pcd,h_incre_pcd))
 
 if __name__ == '__main__':
     logger.info("Done Loading Libraries\n")
