@@ -50,7 +50,7 @@ def visualize_tree_from_coord(grd_pcd, coord:tuple, radius_expand:int=3, zminmax
     print(xyz.shape)
     centroid, label_ = kmeans2(xyz[:,0:2],k=1)
     print(centroid)
-    xnew,ynew = centroid
+    xnew,ynew = centroid[0]
     ynew*=-1
     
     o3d.cuda.pybind.visualization.draw_geometries([tree_with_gnd])
