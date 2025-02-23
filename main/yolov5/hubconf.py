@@ -39,16 +39,19 @@ def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbo
     check_requirements(exclude=('tensorboard', 'thop', 'opencv-python'))
     name = Path(name)
     path = name.with_suffix('.pt') if name.suffix == '' else name  # checkpoint path
+    print(path)
     try:
         device = select_device(('0' if torch.cuda.is_available() else 'cpu') if device is None else device)
 
         if pretrained and channels == 3 and classes == 80:
+            print("using multibackend")
             model = DetectMultiBackend(path, device=device)  # download/load FP32 model
             # model = models.experimental.attempt_load(path, map_location=device)  # download/load FP32 model
         else:
             cfg = list((Path(__file__).parent / 'models').rglob(f'{path.stem}.yaml'))[0]  # model.yaml path
             model = Model(cfg, channels, classes)  # create model
             if pretrained:
+                print("using pretrained")
                 ckpt = torch.load(attempt_download(path), map_location=device, weights_only=False)  # load
                 csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
                 csd = intersect_dicts(csd, model.state_dict(), exclude=['anchors'])  # intersect
@@ -56,6 +59,7 @@ def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbo
                 if len(ckpt['model'].names) == classes:
                     model.names = ckpt['model'].names  # set class names attribute
         if autoshape:
+            print("using autoshape")
             model = AutoShape(model)  # for file/URI/PIL/cv2/np inputs and NMS
         return model.to(device)
 
