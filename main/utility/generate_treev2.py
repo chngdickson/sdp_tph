@@ -94,7 +94,7 @@ class TreeGen():
                             )
                         if h > 0:
                             confi_list.append([confi])
-                            coord_list.append(new_coord)
+                            coord_list.append(coord)
                             n_detected += 1
                         
             if n_detected <= 0:
