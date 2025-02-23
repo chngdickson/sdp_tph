@@ -74,7 +74,7 @@ def regenerate_Tree(grd_pcd, center_coord:tuple, radius_expand:int=5, zminmax:li
     ) 
     o3d.cuda.pybind.visualization.draw_geometries([non_grd])
     distances = np.linalg.norm(np.asarray(non_grd.points)[:,0:2] - center_coord, axis=0)
-    non_grd = non_grd.select_by_index(np.where(distances<=radius_expand)[0])
+    non_grd = non_grd.select_by_index(np.where(distances>=radius_expand)[0])
     o3d.cuda.pybind.visualization.draw_geometries([non_grd])
     
 class TreeGen():
