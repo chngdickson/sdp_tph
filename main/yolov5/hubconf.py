@@ -52,7 +52,7 @@ def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbo
             model = Model(cfg, channels, classes)  # create model
             if pretrained:
                 print("using pretrained")
-                ckpt = torch.load(attempt_download(path), map_location=device, weights_only=False)  # load
+                ckpt = torch.load(attempt_download(path), map_location=device)  # load
                 csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
                 csd = intersect_dicts(csd, model.state_dict(), exclude=['anchors'])  # intersect
                 model.load_state_dict(csd, strict=False)  # load
