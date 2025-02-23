@@ -30,7 +30,7 @@ def crop_tree_for_obj_det():
 
 
 # Under the assumption that the library works
-def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:list=[-15,15]):
+def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:list=[-15,15], iters:int=0):
     xc, yc = coord[0], -coord[1]
     ex = radius_expand
     zmin, zmax = zminmax
@@ -49,11 +49,14 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     )
     xyz = np.asarray(non_grd.points)
     z_min = xyz[:,2].min()
-    non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min+3)[0])
+    non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min+2)[0])
     xyz = np.asarray(non_grd.points)
     centroid, label_ = kmeans2(xyz[:,0:2],k=1)
     xnew,ynew = centroid[0]
-    return (xnew, -ynew)
+    if iters < 1:
+        find_centroid_from_Trees(grd_pcd, (xnew, -ynew), 2, zminmax, iters+1)
+    else:
+        return (xnew, -ynew)
 
 def regenerate_Tree(grd_pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[-15,15]):
     xc, yc = center_coord[0], -center_coord[1]
