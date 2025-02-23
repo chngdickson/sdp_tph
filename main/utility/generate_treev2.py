@@ -42,7 +42,7 @@ def visualize_tree_from_coord(grd_pcd, coord:tuple, radius_expand:int=3, zminmax
         tree_with_gnd, 
         return_non_ground = "both", 
         bsloopSmooth = True, 
-        cloth_res = 10.0, 
+        cloth_res = 15.0, 
         threshold= 2.0, 
         rigidness=1
     )
