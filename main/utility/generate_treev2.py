@@ -54,7 +54,8 @@ def visualize_tree_from_coord(grd_pcd, coord:tuple, radius_expand:int=3, zminmax
     ynew*=-1
     
     o3d.cuda.pybind.visualization.draw_geometries([tree_with_gnd])
-    visualize_tree_from_coord(grd_pcd, centroid, radius_expand=3,zminmax=zminmax)
+    o3d.cuda.pybind.visualization.draw_geometries([non_grd])
+    visualize_tree_from_coord(grd_pcd, [xnew,ynew], radius_expand=3,zminmax=zminmax)
     
 class TreeGen():
     def __init__(self, yml_data, sideViewOut, pcd_name):
