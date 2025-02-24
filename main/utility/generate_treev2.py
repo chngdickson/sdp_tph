@@ -50,9 +50,9 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
         rigidness=2,
         iterations=1000
     )
-    if non_grd.is_empty():
-        return None
     xyz = np.asarray(non_grd.points)
+    if not xyz.size:
+        return None
     z_min_non_gnd = xyz[:,2].min()
     non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min_non_gnd+2)[0])
     xyz = np.asarray(non_grd.points)
