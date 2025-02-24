@@ -6,10 +6,11 @@ import matplotlib.pyplot as plt
 # Ransac to get the features on the tree
 
 def dbscan(tree_cloud, eps=0.5, min_points=10):
+    tree_cloud = tree_cloud.voxel_down_sample(0.04)
     with o3d.utility.VerbosityContextManager(
             o3d.utility.VerbosityLevel.Debug) as cm:
         labels = np.array(
-            tree_cloud.cluster_dbscan(eps=0.02, min_points=10, print_progress=True))
+            tree_cloud.cluster_dbscan(eps=1.0, min_points=10, print_progress=True))
 
     max_label = labels.max()
 
