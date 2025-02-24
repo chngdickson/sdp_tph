@@ -58,12 +58,13 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     xyz = np.asarray(non_grd.points)
     xyz = xyz[:, np.isfinite(xyz).any(axis=0)]
     xyz = xyz[np.isfinite(xyz).any(axis=1)]
+    
+    assert np.all(np.isfinite(xyz)), f"apparently not all is finite {np.all(np.isfinite(xyz))}"
     if not xyz.size:
         return None
     else:
         centroid, label_ = kmeans2(xyz[:,0:2],k=1)
         xnew,ynew = centroid[0]
-        print(f"is finite {np.isfinite(xyz.all())}")
 
         if iters < 1:
             return find_centroid_from_Trees(grd_pcd, (xnew, -ynew), 2, zminmax, iters+1)
