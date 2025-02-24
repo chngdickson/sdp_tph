@@ -38,6 +38,8 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     max_bound = (xc+ex, yc+ex, zmax)
     bbox = o3d.geometry.AxisAlignedBoundingBox(min_bound=min_bound, max_bound=max_bound)
     tree_with_gnd = grd_pcd.crop(bbox)
+    if len(np.asarray(tree_with_gnd.points)) < 1000:
+        return None
     grd, non_grd = csf_py(
         tree_with_gnd, 
         return_non_ground = "both", 
@@ -48,8 +50,8 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
         iterations=1000
     )
     xyz = np.asarray(non_grd.points)
-    z_min = xyz[:,2].min()
-    non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min+2)[0])
+    z_min_non_gnd = xyz[:,2].min()
+    non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min_non_gnd+2)[0])
     xyz = np.asarray(non_grd.points)
     centroid, label_ = kmeans2(xyz[:,0:2],k=1)
     if centroid is None:
