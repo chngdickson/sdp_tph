@@ -95,8 +95,6 @@ class AdTree_cls():
         
     def skeleton_split(self, tree_cloud, skeleton_graph, height):
         """Function to split the stem from the crown using the reconstructed tree skeleton."""
-        start = skeleton_pts[0]
-        print("starting point",start)
         try:
             # get start node and retrieve path
             z_values = nx.get_node_attributes(skeleton_graph, 'z')
@@ -113,6 +111,10 @@ class AdTree_cls():
             tree = KDTree(tree_points[mask_idx])
             selection = set()
             
+            
+            # Get start and end points
+            start = skeleton_pts[0]
+            print("starting point",start)
             # Get closest to h
             num_ = int(np.linalg.norm(skeleton_pts[1]-skeleton_pts[0]) / 0.05)
             skeleton_pts = np.linspace(start=skeleton_pts[0], stop=skeleton_pts[-1], num=num_)
