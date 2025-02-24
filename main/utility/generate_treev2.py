@@ -188,7 +188,7 @@ class TreeGen():
                 # Perform Operations
                 # new_coord = find_centroid_from_Trees(pcd,coord_list[0],3, [z_min, z_max])
                 singular_tree = regenerate_Tree(pcd, coord, 5, [z_min, z_max], h_incre=4)
-                save_pointcloud(singular_tree, f"{self.sideViewOut}/{self.pcd_name}_{i}.pcd")
+                save_pointcloud(singular_tree, f"{self.sideViewOut}/{self.pcd_name}_{index}.pcd")
                 # self.adTreeCls.separate_via_dbscan(singular_tree)
                 # self.adTreeCls.segment_tree(singular_tree)
         print("\n\n\n",total_detected,total_detected)
