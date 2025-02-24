@@ -88,5 +88,4 @@ class AdTree_cls():
         return stem_cloud, crown_cloud
     
     def separate_via_dbscan(self, tree_cloud):
-        outlier_cloud , labels = dbscan(tree_cloud)
-        o3d.visualization.draw_geometries([outlier_cloud])
+        dbscan(tree_cloud)
