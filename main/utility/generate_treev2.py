@@ -92,11 +92,28 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     # else:
     #     return (xnew, -ynew)
 
-def regenerate_Tree(grd_pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[-15,15]):
+def regenerate_Tree(pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[-15,15],h_incre=4):
     xc, yc = center_coord[0], -center_coord[1]
-    tree_with_gnd = crop_treeWithBBox(grd_pcd, center_coord, radius_expand, zminmax)
-    distances = np.linalg.norm(np.asarray(tree_with_gnd.points)[:,0:2] - np.array([xc, yc]), axis=1)
-    tree_with_gnd = tree_with_gnd.select_by_index(np.where(distances<=radius_expand)[0])
+    tree = crop_treeWithBBox(pcd, center_coord, radius_expand, zminmax)
+    xyz = np.asarray(tree.points)
+    # Split Tree to grd and non-grd
+    tree_bark_with_grd = tree.select_by_index(np.where(xyz[:,2]<xyz[:,2].min()+h_incre)[0])
+    tree_without_grd   = tree.select_by_index(np.where(xyz[:,2]>xyz[:,2].min()+h_incre)[0])
+    
+    tree_bark = csf_py(
+            tree_bark_with_grd, 
+            return_non_ground = "non_ground", 
+            bsloopSmooth = True, 
+            cloth_res = 15.0, 
+            threshold= 2.0, 
+            rigidness=1,
+            iterations=500
+        ) 
+    # Combine Tree again after performing csf filter
+    tree = tree_bark + tree_without_grd
+    distances = np.linalg.norm(np.asarray(tree.points)[:,0:2] - np.array([xc, yc]), axis=1)
+    tree = tree.select_by_index(np.where(distances<=radius_expand)[0])
+    
     # grd, non_grd = csf_py(
     #     tree_with_gnd, 
     #     return_non_ground = "both", 
@@ -106,7 +123,7 @@ def regenerate_Tree(grd_pcd, center_coord:tuple, radius_expand:int=5, zminmax:li
     #     rigidness=2,
     #     iterations=1000
     # )     
-    o3d.cuda.pybind.visualization.draw_geometries([tree_with_gnd])
+    o3d.cuda.pybind.visualization.draw_geometries([tree])
     
 class TreeGen():
     def __init__(self, yml_data, sideViewOut, pcd_name):
@@ -182,4 +199,4 @@ class TreeGen():
                 print("h_detected",h>0)
                 # Perform Operations
                 # new_coord = find_centroid_from_Trees(pcd,coord_list[0],3, [z_min, z_max])
-                regenerate_Tree(non_grd, coord, 5, [z_min, z_max])
+                regenerate_Tree(pcd, coord, 5, [z_min, z_max])
