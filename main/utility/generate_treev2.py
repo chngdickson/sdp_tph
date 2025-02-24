@@ -106,6 +106,8 @@ def regenerate_Tree(pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[
     # 3. Cylinder Fit the Tree
     distances = np.linalg.norm(np.asarray(tree.points)[:,0:2] - np.array([xc, yc]), axis=1)
     tree = tree.select_by_index(np.where(distances<=radius_expand)[0])
+    
+    # Split the tree to Multiple Instances and recreate the tree
     return tree
     
     # o3d.cuda.pybind.visualization.draw_geometries([tree])
@@ -186,5 +188,6 @@ class TreeGen():
                 # Perform Operations
                 # new_coord = find_centroid_from_Trees(pcd,coord_list[0],3, [z_min, z_max])
                 singular_tree = regenerate_Tree(pcd, coord, 5, [z_min, z_max], h_incre=4)
-                self.adTreeCls.segment_tree(singular_tree)
+                self.adTreeCls.separate_via_dbscan(singular_tree)
+                # self.adTreeCls.segment_tree(singular_tree)
         print("\n\n\n",total_detected,total_detected)

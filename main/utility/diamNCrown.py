@@ -3,11 +3,13 @@ sys.path.insert(1, '/root/sdp_tph/submodules/PCTM/pctm/src')
 
 import numpy as np
 import open3d as o3d
+
+# Personal libs
 import adTreeutils.tree_utils as tree_utils
 import adTreeutils.o3d_utils as o3d_utils
 from labels import Labels
 from config import Paths
-
+from .o3d_extras import dbscan
 
 class AdTree_cls():
     def __init__(self):
@@ -84,3 +86,7 @@ class AdTree_cls():
         crown_cloud = tree_cloud.select_by_index(np.where(mask)[0], invert=True)
 
         return stem_cloud, crown_cloud
+    
+    def separate_via_dbscan(self, tree_cloud):
+        outlier_cloud , labels = dbscan(tree_cloud)
+        o3d.visualization.draw_geometries(outlier_cloud)
