@@ -53,7 +53,6 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
         return None
     xyz = np.asarray(tree_with_gnd.points)
     tol=0.3
-    height_incre = 4
     tree_with_gnd = tree_with_gnd.select_by_index(np.where(xyz[:,2]<xyz[:,2].min()+height_incre)[0])
     xyz = np.asarray(tree_with_gnd.points)
     z_vals = xyz[:,2]
@@ -84,19 +83,12 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
             return find_centroid_from_Trees(grd_pcd, (xnew, -ynew), 2, zminmax, iters+1, height_incre)
         else:
             return (xnew, -ynew)
-    # if centroid is None:
-    #     return None
-    # xnew,ynew = centroid[0]
-    # if iters < 1:
-    #     find_centroid_from_Trees(grd_pcd, (xnew, -ynew), 2, zminmax, iters+1)
-    # else:
-    #     return (xnew, -ynew)
 
 def regenerate_Tree(pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[-15,15],h_incre=4):
     xc, yc = center_coord[0], -center_coord[1]
     tree = crop_treeWithBBox(pcd, center_coord, radius_expand, zminmax)
     xyz = np.asarray(tree.points)
-    # Split Tree to grd and non-grd
+    # 1. Split Tree to grd and non-grd
     tree_bark_with_grd = tree.select_by_index(np.where(xyz[:,2]<xyz[:,2].min()+h_incre)[0])
     tree_without_grd   = tree.select_by_index(np.where(xyz[:,2]>xyz[:,2].min()+h_incre)[0])
     
@@ -109,20 +101,14 @@ def regenerate_Tree(pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[
             rigidness=1,
             iterations=500
         ) 
-    # Combine Tree again after performing csf filter
+    # 2. Combine Tree again after performing csf filter
     tree = tree_bark + tree_without_grd
+    
+    # 3. Cylinder Fit the Tree
     distances = np.linalg.norm(np.asarray(tree.points)[:,0:2] - np.array([xc, yc]), axis=1)
     tree = tree.select_by_index(np.where(distances<=radius_expand)[0])
     
-    # grd, non_grd = csf_py(
-    #     tree_with_gnd, 
-    #     return_non_ground = "both", 
-    #     bsloopSmooth = True, 
-    #     cloth_res = 15.0, 
-    #     threshold= 2.0, 
-    #     rigidness=2,
-    #     iterations=1000
-    # )     
+    
     # o3d.cuda.pybind.visualization.draw_geometries([tree])
     
 class TreeGen():
