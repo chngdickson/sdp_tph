@@ -118,7 +118,9 @@ def regenerate_Tree(pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[
         if temp_tree is None:
             temp_tree = crop_treeWithBBox(tree, center_coord, r_ex, [h-h_diff, h+h_diff])
         else:
-            temp_tree += crop_treeWithBBox(tree, center_coord, r_ex, [h-h_diff, h+h_diff])
+            a = crop_treeWithBBox(tree, center_coord, r_ex, [h-h_diff, h+h_diff])
+            if a is not None:
+                temp_tree+=a
     return temp_tree
     
     # o3d.cuda.pybind.visualization.draw_geometries([tree])
