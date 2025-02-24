@@ -15,7 +15,7 @@ class AdTree_cls():
         self.adTree_exe = Paths.get_adtree()
         
     def reconstruct_skeleton(self, tree_cloud):
-        labels = tree_utils.leafwood_classificiation(tree_cloud, method='curvature')
+        labels = tree_utils.leafwood_classificiation(tree_cloud, method='surface_variation')
         wood_cloud = tree_cloud.select_by_index(np.where(labels==Labels.WOOD)[0])
         skeleton = tree_utils.reconstruct_skeleton(wood_cloud, self.adTree_exe)
         tree_utils.show_tree(tree_cloud, labels, skeleton)
