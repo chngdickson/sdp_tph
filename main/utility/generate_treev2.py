@@ -52,18 +52,25 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     )
     xyz = np.asarray(non_grd.points)
     z_min_non_gnd = xyz[:,2].min()
-    non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min_non_gnd+2)[0]).remove_non_finite_points()
-    if not non_grd.has_points():
-        return None
-    xyz = np.asarray(non_grd.points)
-    centroid, label_ = kmeans2(xyz[:,0:2],k=1)
-    if centroid is None:
-        return None
-    xnew,ynew = centroid[0]
-    if iters < 1:
-        find_centroid_from_Trees(grd_pcd, (xnew, -ynew), 2, zminmax, iters+1)
+    non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min_non_gnd+2)[0])
+    if non_grd.has_points():
+        non_grd.remove_non_finite_points()
+        xyz = np.asarray(non_grd.points)
+        centroid, label_ = kmeans2(xyz[:,0:2],k=1)
+        xnew,ynew = centroid[0]
+        if iters < 1:
+            return find_centroid_from_Trees(grd_pcd, (xnew, -ynew), 2, zminmax, iters+1)
+        else:
+            return (xnew, -ynew)
     else:
-        return (xnew, -ynew)
+        return None
+    # if centroid is None:
+    #     return None
+    # xnew,ynew = centroid[0]
+    # if iters < 1:
+    #     find_centroid_from_Trees(grd_pcd, (xnew, -ynew), 2, zminmax, iters+1)
+    # else:
+    #     return (xnew, -ynew)
 
 def regenerate_Tree(grd_pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[-15,15]):
     xc, yc = center_coord[0], -center_coord[1]
