@@ -53,11 +53,13 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     xyz = np.asarray(non_grd.points)
     z_min_non_gnd = xyz[:,2].min()
     non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min_non_gnd+2)[0])
-    non_grd = non_grd.remove_non_finite_points()
-    if non_grd.has_points():
-        xyz = np.asarray(non_grd.points)
+    xyz = np.asarray(non_grd.points)
+    xyz = xyz[~np.isnan(xyz)]
+    xyz = xyz[~np.isfinite(xyz)]
+    if len(xyz)>1:
         centroid, label_ = kmeans2(xyz[:,0:2],k=1)
         xnew,ynew = centroid[0]
+
         if iters < 1:
             return find_centroid_from_Trees(grd_pcd, (xnew, -ynew), 2, zminmax, iters+1)
         else:
