@@ -98,7 +98,7 @@ class AdTree_cls():
     
     def path_unsplit(self, graph, start_node):
         path = [start_node]
-        while graph.out_degree(path[-1]) == 1:
+        while graph.out_degree(path[-1]) <= 5:
             for node in graph.successors(path[-1]):
                 path.append(node)
         return path
@@ -132,7 +132,7 @@ class AdTree_cls():
             print("max_z",tree_points[mask_idx][:,2].max())
             
             # Get closest to h
-            num_ = int(height / 0.05)
+            num_ = int(np.linalg.norm(end_pt-start_pt) / 0.05)
             skeleton_pts = np.linspace(start=skeleton_pts[0], stop=skeleton_pts[-1], num=num_)
             for result in tree.query_ball_point(skeleton_pts, .75):
                 selection.update(result)
