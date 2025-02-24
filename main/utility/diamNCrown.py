@@ -114,7 +114,9 @@ class AdTree_cls():
             
             # Get start and end points
             start = skeleton_pts[0]
+            end_temp = start + np.array([0,0,height])
             print("starting point",start)
+            print("temp_end", end_temp)
             # Get closest to h
             num_ = int(np.linalg.norm(skeleton_pts[1]-skeleton_pts[0]) / 0.05)
             skeleton_pts = np.linspace(start=skeleton_pts[0], stop=skeleton_pts[-1], num=num_)
