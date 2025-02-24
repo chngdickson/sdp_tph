@@ -98,9 +98,10 @@ class AdTree_cls():
     
     def path_unsplit(self, graph, start_node):
         path = [start_node]
-        while graph.out_degree(path[-1]) <= 3:
+        while graph.out_degree(path[-1]) <= 2:
             for node in graph.successors(path[-1]):
                 path.append(node)
+                break
         return path
     def skeleton_split(self, tree_cloud, skeleton_graph, height):
         """Function to split the stem from the crown using the reconstructed tree skeleton."""
