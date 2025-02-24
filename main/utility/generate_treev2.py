@@ -104,7 +104,7 @@ def regenerate_Tree(pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[
             tree_bark_with_grd, 
             return_non_ground = "non_ground", 
             bsloopSmooth = True, 
-            cloth_res = 15.0, 
+            cloth_res = 0.5,
             threshold= 2.0, 
             rigidness=1,
             iterations=500
