@@ -28,7 +28,9 @@ from .csf_py import csf_py
 def crop_tree_for_obj_det():
     pass
 
-
+def clean(arr):
+    output = arr[(np.isnan(arr)==False) & (np.isinf(arr)==False)]
+    return output
 # Under the assumption that the library works
 def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:list=[-15,15], iters:int=0):
     xc, yc = coord[0], -coord[1]
@@ -56,14 +58,14 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     z_min_non_gnd = xyz[:,2].min()
     non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min_non_gnd+2)[0])
     xyz = np.asarray(non_grd.points)
-    xyz = xyz[:, np.isfinite(xyz).any(axis=0)]
-    xyz = xyz[np.isfinite(xyz).any(axis=1)]
-    
-    assert np.all(np.isfinite(xyz)), f"apparently not all is finite {np.all(np.isfinite(xyz))}"
+    # xyz = xyz[:, np.isfinite(xyz).any(axis=0)]
+    # xyz = xyz[np.isfinite(xyz).any(axis=1)]
+    xy = clean(xyz[:,0:2])
+    assert np.all(np.isfinite(xy)), f"apparently not all is finite {np.all(np.isfinite(xyz))}"
     if not xyz.size:
         return None
     else:
-        centroid, label_ = kmeans2(xyz[:,0:2],k=1)
+        centroid, label_ = kmeans2(xy,k=1)
         xnew,ynew = centroid[0]
 
         if iters < 1:
