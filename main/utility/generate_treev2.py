@@ -38,7 +38,7 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     max_bound = (xc+ex, yc+ex, zmax)
     bbox = o3d.geometry.AxisAlignedBoundingBox(min_bound=min_bound, max_bound=max_bound)
     tree_with_gnd = grd_pcd.crop(bbox)
-    tree_with_gnd.remove_non_finite_points()
+    tree_with_gnd = tree_with_gnd.remove_non_finite_points()
     if len(np.asarray(tree_with_gnd.points)) < 1000:
         return None
     grd, non_grd = csf_py(
