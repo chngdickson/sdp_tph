@@ -23,6 +23,10 @@ from .csf_py import csf_py
     - Visualize
 6. Separate to Cylinder and 
 """
+# I should crop separately
+# The original pointcloud, Crop with bbox, Separate the pointcloud to 4 meters from lowest
+# - Lowest 4 meter, CSF filter and get Non-Ground, Find coordinates from there
+# - Above 4 meter, append to Lowest 
 # crop_pcd_to_many
 # get_h_from_each_tree_slice
 def crop_tree_for_obj_det():
@@ -47,15 +51,6 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     tree_with_gnd = crop_treeWithBBox(grd_pcd, coord, radius_expand, zminmax)
     if tree_with_gnd is None:
         return None
-    # grd, non_grd = csf_py(
-    #     tree_with_gnd, 
-    #     return_non_ground = "both", 
-    #     bsloopSmooth = True, 
-    #     cloth_res = 15.0, 
-    #     threshold= 2.0, 
-    #     rigidness=2,
-    #     iterations=1000
-    # )
     xyz = np.asarray(tree_with_gnd.points)
     if not xyz.size:
         return None
@@ -86,13 +81,14 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     #     return (xnew, -ynew)
 
 def regenerate_Tree(grd_pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[-15,15]):
-    xc, yc = center_coord[0], -center_coord[1]
-    ex = radius_expand
-    zmin, zmax = zminmax
-    min_bound = (xc-ex, yc-ex, zmin)
-    max_bound = (xc+ex, yc+ex, zmax)
-    bbox = o3d.geometry.AxisAlignedBoundingBox(min_bound=min_bound, max_bound=max_bound)
-    tree_with_gnd = grd_pcd.crop(bbox)
+    # xc, yc = center_coord[0], -center_coord[1]
+    # ex = radius_expand
+    # zmin, zmax = zminmax
+    # min_bound = (xc-ex, yc-ex, zmin)
+    # max_bound = (xc+ex, yc+ex, zmax)
+    # bbox = o3d.geometry.AxisAlignedBoundingBox(min_bound=min_bound, max_bound=max_bound)
+    # tree_with_gnd = grd_pcd.crop(bbox)
+    tree_with_gnd = crop_treeWithBBox(grd_pcd, center_coord, radius_expand, zminmax)
     distances = np.linalg.norm(np.asarray(tree_with_gnd.points)[:,0:2] - np.array([xc, yc]), axis=1)
     tree_with_gnd = tree_with_gnd.select_by_index(np.where(distances<=radius_expand)[0])
     # grd, non_grd = csf_py(
