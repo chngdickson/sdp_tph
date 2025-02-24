@@ -28,21 +28,33 @@ from .csf_py import csf_py
 def crop_tree_for_obj_det():
     pass
 
-def clean(arr):
-    output = arr[(np.isnan(arr)==False) & (np.isinf(arr)==False)]
-    return output
-# Under the assumption that the library works
-def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:list=[-15,15], iters:int=0):
+def crop_treeWithBBox(pcd, coord, expand_xy, zminmax:list=[-15,15]):
     xc, yc = coord[0], -coord[1]
-    ex = radius_expand
+    ex = expand_xy
     zmin, zmax = zminmax
     min_bound = (xc-ex, yc-ex, zmin)
     max_bound = (xc+ex, yc+ex, zmax)
     bbox = o3d.geometry.AxisAlignedBoundingBox(min_bound=min_bound, max_bound=max_bound)
-    tree_with_gnd = grd_pcd.crop(bbox)
-    tree_with_gnd = tree_with_gnd.remove_non_finite_points()
-    if len(np.asarray(tree_with_gnd.points)) < 1000:
+    pcd = pcd.crop(bbox)
+    pcd = pcd.remove_non_finite_points()
+    if pcd.is_empty():
         return None
+    else:
+        return pcd
+    
+# Under the assumption that the library works
+def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:list=[-15,15], iters:int=0):
+    # xc, yc = coord[0], -coord[1]
+    # ex = radius_expand
+    # zmin, zmax = zminmax
+    # min_bound = (xc-ex, yc-ex, zmin)
+    # max_bound = (xc+ex, yc+ex, zmax)
+    # bbox = o3d.geometry.AxisAlignedBoundingBox(min_bound=min_bound, max_bound=max_bound)
+    # tree_with_gnd = grd_pcd.crop(bbox)
+    # tree_with_gnd = tree_with_gnd.remove_non_finite_points()
+    # if len(np.asarray(tree_with_gnd.points)) < 1000:
+    #     return None
+    tree_with_gnd = crop_treeWithBBox(grd_pcd, coord, radius_expand, zminmax)
     grd, non_grd = csf_py(
         tree_with_gnd, 
         return_non_ground = "both", 
@@ -119,7 +131,7 @@ class TreeGen():
         self.obj_det_tall = Detect(yolov5_folder_pth, side_view_model_pth, img_size=self.side_view_img_size_tall)
         
     
-    def process_each_coord(self, pcd, grd_pcd, coords, w_lin_pcd, h_lin_pcd):
+    def process_each_coord(self, pcd, grd_pcd, non_grd, coords, w_lin_pcd, h_lin_pcd):
         # Init
         h_arr_pcd, h_increment = h_lin_pcd
         w_arr_pcd, w_increment = w_lin_pcd
@@ -135,7 +147,7 @@ class TreeGen():
             # Split each coord to multi-sections and find the one with highest confidence
             h_loop = h_arr_pcd[:-1] 
             w_loop = w_arr_pcd[:-1]
-            coord = find_centroid_from_Trees(pcd,coord,3, [z_min, z_max])
+            coord = find_centroid_from_Trees(non_grd,coord,2, [z_min, z_max])
             if coord is None:
                 continue
             for i, h in enumerate(h_loop):
@@ -176,4 +188,4 @@ class TreeGen():
                 print("h_detected",h>0)
                 # Perform Operations
                 # new_coord = find_centroid_from_Trees(pcd,coord_list[0],3, [z_min, z_max])
-                regenerate_Tree(pcd, coord, 5, [z_min, z_max])
+                regenerate_Tree(non_grd, coord, 5, [z_min, z_max])

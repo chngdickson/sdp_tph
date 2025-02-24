@@ -195,7 +195,7 @@ def main(path_directory, pcd_name, input_file_type):
 
     # 4. Clear unused memory
     del topViewModel
-    del non_grd
+    # del non_grd
     ####################################################
     ##### END  Get Coordinates from Top View ###########
     ####################################################
@@ -208,7 +208,7 @@ def main(path_directory, pcd_name, input_file_type):
     
     # Yaml Params
     tree_gen = TreeGen(yml_data, sideViewOut, pcd_name)
-    tree_gen.process_each_coord(pcd, grd, coordinates, (w_arr_pcd,w_incre_pcd), (h_arr_pcd,h_incre_pcd))
+    tree_gen.process_each_coord(pcd, grd, non_grd, coordinates, (w_arr_pcd,w_incre_pcd), (h_arr_pcd,h_incre_pcd))
 
 if __name__ == '__main__':
     logger.info("Done Loading Libraries\n")
