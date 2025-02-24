@@ -1,6 +1,7 @@
 from .pcd2img import *
 from .get_coords import *
 from .generate_tree import get_h_from_each_tree_slice, get_tree_from_coord
+from .diamNCrown import AdTree_cls
 from .yolo_detect import Detect
 import cv2
 import numpy as np
@@ -29,8 +30,6 @@ from .csf_py import csf_py
 # - Above 4 meter, append to Lowest 
 # crop_pcd_to_many
 # get_h_from_each_tree_slice
-def crop_tree_for_obj_det():
-    pass
 
 def crop_treeWithBBox(pcd, coord, expand_xy, zminmax:list=[-15,15]):
     xc, yc = coord[0], -coord[1]
@@ -107,7 +106,7 @@ def regenerate_Tree(pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[
     # 3. Cylinder Fit the Tree
     distances = np.linalg.norm(np.asarray(tree.points)[:,0:2] - np.array([xc, yc]), axis=1)
     tree = tree.select_by_index(np.where(distances<=radius_expand)[0])
-    
+    return tree
     
     # o3d.cuda.pybind.visualization.draw_geometries([tree])
     
@@ -126,7 +125,7 @@ class TreeGen():
         yolov5_folder_pth = yml_data["yolov5"]["yolov5_pth"]
         self.obj_det_short = Detect(yolov5_folder_pth, side_view_model_pth, img_size=self.side_view_img_size)
         self.obj_det_tall = Detect(yolov5_folder_pth, side_view_model_pth, img_size=self.side_view_img_size_tall)
-        
+        self.adTreeCls = AdTree_cls()
     
     def process_each_coord(self, pcd, grd_pcd, non_grd, coords, w_lin_pcd, h_lin_pcd):
         # Init
@@ -186,5 +185,6 @@ class TreeGen():
                 print("h_detected",h>0)
                 # Perform Operations
                 # new_coord = find_centroid_from_Trees(pcd,coord_list[0],3, [z_min, z_max])
-                regenerate_Tree(pcd, coord, 5, [z_min, z_max], h_incre=4)
+                singular_tree = regenerate_Tree(pcd, coord, 5, [z_min, z_max], h_incre=4)
+                self.adTreeCls.reconstruct_skeleton(singular_tree)
         print("\n\n\n",total_detected,total_detected)
