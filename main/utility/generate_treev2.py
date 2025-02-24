@@ -81,7 +81,7 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     #     return (xnew, -ynew)
 
 def regenerate_Tree(grd_pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[-15,15]):
-    # xc, yc = center_coord[0], -center_coord[1]
+    xc, yc = center_coord[0], -center_coord[1]
     # ex = radius_expand
     # zmin, zmax = zminmax
     # min_bound = (xc-ex, yc-ex, zmin)
