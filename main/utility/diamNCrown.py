@@ -119,8 +119,9 @@ class AdTree_cls():
             print("starting point",start_pt)
             print("temp_end", end_temp)
             print("real_end", end_pt)
+            
             # Get closest to h
-            num_ = int(np.linalg.norm(skeleton_pts[1]-skeleton_pts[0]) / 0.05)
+            num_ = int(np.linalg.norm(end_pt-skeleton_pts[0]) / 0.05)
             skeleton_pts = np.linspace(start=skeleton_pts[0], stop=skeleton_pts[-1], num=num_)
             for result in tree.query_ball_point(skeleton_pts, .75):
                 selection.update(result)
