@@ -98,7 +98,7 @@ class AdTree_cls():
     
     def path_unsplit(self, graph, start_node):
         path = [start_node]
-        while graph.out_degree(path[-1]) <= 5:
+        while graph.out_degree(path[-1]) <= 3:
             for node in graph.successors(path[-1]):
                 path.append(node)
         return path
