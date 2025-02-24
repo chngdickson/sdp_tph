@@ -21,4 +21,4 @@ def dbscan(tree_cloud, eps=0.5, min_points=10):
     
 
 def save_pointcloud(tree_cloud, filename):
-    o3d.io.write_point_cloud(filename, tree_cloud, "pcd")
+    o3d.io.write_point_cloud(filename, tree_cloud)
