@@ -54,9 +54,10 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     xyz = np.asarray(tree_with_gnd.points)
     tol=0.3
     height_incre = 3
-    z_vals = xyz[:,2]
     z_min = z_vals.min()
-    tree_with_gnd = tree_with_gnd.select_by_index(np.where(z_vals<z_min+height_incre)[0])
+    tree_with_gnd = tree_with_gnd.select_by_index(np.where(xyz[:,2]<z_min+height_incre)[0])
+    xyz = np.asarray(tree_with_gnd.points)
+    z_vals = xyz[:,2]
     if z_vals.mean() < (z_min+ (height_incre*tol)):
         tree_with_gnd = csf_py(
             tree_with_gnd, 
@@ -94,12 +95,6 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
 
 def regenerate_Tree(grd_pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[-15,15]):
     xc, yc = center_coord[0], -center_coord[1]
-    # ex = radius_expand
-    # zmin, zmax = zminmax
-    # min_bound = (xc-ex, yc-ex, zmin)
-    # max_bound = (xc+ex, yc+ex, zmax)
-    # bbox = o3d.geometry.AxisAlignedBoundingBox(min_bound=min_bound, max_bound=max_bound)
-    # tree_with_gnd = grd_pcd.crop(bbox)
     tree_with_gnd = crop_treeWithBBox(grd_pcd, center_coord, radius_expand, zminmax)
     distances = np.linalg.norm(np.asarray(tree_with_gnd.points)[:,0:2] - np.array([xc, yc]), axis=1)
     tree_with_gnd = tree_with_gnd.select_by_index(np.where(distances<=radius_expand)[0])
