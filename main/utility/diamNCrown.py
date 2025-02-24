@@ -59,6 +59,8 @@ class AdTree_cls():
         o3d_utils.plot_mesh(crown_mesh_hull)
         stem_mesh_hull, volume = tree_utils.crown_to_mesh(stem_cloud, method='alphashape')
         o3d_utils.plot_mesh(stem_mesh_hull)
+        o3d.visualization.draw_geometries([stem_cloud])
+        o3d.visualization.draw_geometries([crown_cloud])
         
     def tree_separate(self, tree_cloud, adTree_exe, filter_leaves="surface_variation"):
         """Function to split stem from o3d tree point cloud."""
