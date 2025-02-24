@@ -48,7 +48,7 @@ class AdTree_cls():
             mask = o3d_utils.curvature_filter(pcd_, .075, min1=20, min2=35)
             ind = np.hstack([trace[i] for i in ind_[mask]])
         else:
-            mask = self.surface_variation_filter(pcd_, .1, .2)
+            mask = self.surface_variation_filter(pcd_, .74, .2)
             ind = np.hstack([trace[i] for i in ind_[mask]])
 
         labels[ind] = Labels.WOOD
