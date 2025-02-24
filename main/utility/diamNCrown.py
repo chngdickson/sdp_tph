@@ -54,8 +54,31 @@ class AdTree_cls():
         return labels
     
     def segment_tree(self, tree_cloud):
-        stem_cloud, crown_cloud = tree_utils.tree_separate(tree_cloud, self.adTree_exe)
+        stem_cloud, crown_cloud = self.tree_separate(tree_cloud, self.adTree_exe, filter_leaves="surface_variation")
         crown_mesh_hull, volume = tree_utils.crown_to_mesh(crown_cloud, method='alphashape')
         o3d_utils.plot_mesh(crown_mesh_hull)
         stem_mesh_hull, volume = tree_utils.crown_to_mesh(stem_cloud, method='alphashape')
         o3d_utils.plot_mesh(stem_mesh_hull)
+        
+    def tree_separate(self, tree_cloud, adTree_exe, filter_leaves="surface_variation"):
+        """Function to split stem from o3d tree point cloud."""
+
+        # 1. Classify and filter leaves (optional)
+        labels = np.ones(len(tree_cloud.points), dtype=int)
+        labels = self.leafwood_classificiation(tree_cloud, method=filter_leaves)
+        wood_cloud = tree_cloud.select_by_index(np.where(labels==Labels.WOOD)[0])
+
+        # 2. Skeleton reconstruction
+        print("Reconstructing tree skeleton...")
+        skeleton = tree_utils.reconstruct_skeleton(wood_cloud, adTree_exe)
+
+        # 3. Stem-crow splitting
+        print("Splitting stem form crown...")
+        mask = tree_utils.skeleton_split(tree_cloud, skeleton['graph'])
+        labels[mask] = Labels.STEM
+        print(f"Done. {np.sum(mask)}/{len(labels)} points labeled as stem.")
+
+        stem_cloud = tree_cloud.select_by_index(np.where(mask)[0])
+        crown_cloud = tree_cloud.select_by_index(np.where(mask)[0], invert=True)
+
+        return stem_cloud, crown_cloud
