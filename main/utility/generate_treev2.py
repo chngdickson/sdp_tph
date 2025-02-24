@@ -108,11 +108,12 @@ def regenerate_Tree(pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[
     tree = tree.select_by_index(np.where(distances<=radius_expand)[0])
     
     # Split the tree to Multiple Instances and recreate the tree
-    h_diff = z.max()-z.min()/9
+    n_splits = 10
+    h_diff = z.max()-z.min()/n_splits
     tol = 0.4
-    n_splits = 9
+    
     temp_tree = None
-    for i, h in enumerate(np.linspace(z.min(),z.max(), n_splits)):
+    for i, h in enumerate(np.linspace(z.min(),z.max(), n_splits, endpoint=False)):
         r_ex = (i/n_splits)*radius_expand if i/n_splits >= tol else tol*radius_expand
         if temp_tree is None:
             temp_tree = crop_treeWithBBox(tree, center_coord, r_ex, [h, h+h_diff])
