@@ -124,7 +124,7 @@ class AdTree_cls():
             mask_idx = np.where(tree_points[:,2] < skeleton_pts[:,2].max())[0]
             
             # TODO Filter tree points
-            tree = KDTree(tree_points)
+            tree = KDTree(tree_points[mask_idx])
             selection = set()
             
             
