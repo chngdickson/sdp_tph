@@ -1,6 +1,9 @@
 import sys
 sys.path.insert(1, '/root/sdp_tph/submodules/PCTM/pctm/src')
-
+import logging
+from functools import partial
+logging.info = partial(logging.info, exc_info=True)
+logger = logging.getLogger()
 import numpy as np
 import open3d as o3d
 import networkx as nx
@@ -139,6 +142,6 @@ class AdTree_cls():
             return labels
 
         except Exception as e:
-            print('Error at %s', 'tree_utils error', exc_info=e)
+            logger.info('Error at %s', 'tree_utils error', exc_info=e)
             return None
     
