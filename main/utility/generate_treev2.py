@@ -112,6 +112,7 @@ class TreeGen():
             # Split each coord to multi-sections and find the one with highest confidence
             h_loop = h_arr_pcd[:-1] 
             w_loop = w_arr_pcd[:-1]
+            coord = find_centroid_from_Trees(pcd,coord,3, [z_min, z_max])
             for i, h in enumerate(h_loop):
                 for j,w in enumerate(w_loop):
                     min_x, max_x = w, w+w_increment+w_increment/4
@@ -149,5 +150,5 @@ class TreeGen():
             else:
                 print("h_detected",h>0)
                 # Perform Operations
-                new_coord = find_centroid_from_Trees(pcd,coord_list[0],3, [z_min, z_max])
-                regenerate_Tree(pcd, new_coord, 5, [z_min, z_max])
+                # new_coord = find_centroid_from_Trees(pcd,coord_list[0],3, [z_min, z_max])
+                regenerate_Tree(pcd, coord, 5, [z_min, z_max])
