@@ -73,7 +73,7 @@ class AdTree_cls():
         # 2. Skeleton reconstruction
         print("Reconstructing tree skeleton...")
         skeleton = tree_utils.reconstruct_skeleton(wood_cloud, adTree_exe)
-
+        print("num_vertices",len(skeleton['vertices']))
         # 3. Stem-crow splitting
         print("Splitting stem form crown...")
         mask = tree_utils.skeleton_split(tree_cloud, skeleton['graph'])
