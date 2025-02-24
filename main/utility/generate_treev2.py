@@ -53,7 +53,7 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
         return None
     xyz = np.asarray(tree_with_gnd.points)
     tol=0.3
-    height_incre = 3
+    height_incre = 4
     tree_with_gnd = tree_with_gnd.select_by_index(np.where(xyz[:,2]<xyz[:,2].min()+height_incre)[0])
     xyz = np.asarray(tree_with_gnd.points)
     z_vals = xyz[:,2]
@@ -64,7 +64,7 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
             bsloopSmooth = True, 
             cloth_res = 15.0, 
             threshold= 2.0, 
-            rigidness=2,
+            rigidness=1,
             iterations=500
         )  
     
