@@ -3,7 +3,7 @@ sys.path.insert(1, '/root/sdp_tph/submodules/PCTM/pctm/src')
 
 import numpy as np
 import open3d as o3d
-import adTreeutils.utils.tree_utils as tree_utils
+import adTreeutils.tree_utils as tree_utils
 import adTreeutils.o3d_utils as o3d_utils
 from labels import Labels
 from config import Paths
