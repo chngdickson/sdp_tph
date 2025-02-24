@@ -57,7 +57,7 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min_non_gnd+2)[0])
     xyz = np.asarray(non_grd.points)
     print(xyz.shape)
-    xyz = xyz[~np.isnan(xyz)]
+    xyz = xyz[:, ~np.isnan(xyz).any(axis=0)]
     print("nan",xyz.shape)
     xyz = xyz[np.isfinite(xyz)]
     print("finite",xyz.shape)
