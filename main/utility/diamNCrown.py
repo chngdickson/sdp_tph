@@ -3,10 +3,13 @@ sys.path.insert(1, '/root/sdp_tph/submodules/PCTM/pctm/src')
 
 import numpy as np
 import open3d as o3d
+import networkx as nx
+from scipy.spatial import KDTree
 
 # Personal libs
 import adTreeutils.tree_utils as tree_utils
 import adTreeutils.o3d_utils as o3d_utils
+from adTreeutils import graph_utils
 from labels import Labels
 from config import Paths
 from .o3d_extras import dbscan
@@ -78,7 +81,7 @@ class AdTree_cls():
         tree_utils.show_tree(tree_cloud, labels, skeleton)
         # 3. Stem-crow splitting
         print("Splitting stem form crown...")
-        mask = tree_utils.skeleton_split(tree_cloud, skeleton['graph'])
+        mask = self.skeleton_split(tree_cloud, skeleton['graph'], height=5)
         labels[mask] = Labels.STEM
         print(f"Done. {np.sum(mask)}/{len(labels)} points labeled as stem.")
 
@@ -90,4 +93,37 @@ class AdTree_cls():
     def separate_via_dbscan(self, tree_cloud):
         dbscan(tree_cloud)
         
+    def skeleton_split(self, tree_cloud, skeleton_graph, height):
+        """Function to split the stem from the crown using the reconstructed tree skeleton."""
+        start = skeleton_pts[0]
+        print("starting point",start)
+        try:
+            # get start node and retrieve path
+            z_values = nx.get_node_attributes(skeleton_graph, 'z')
+            start_node = min(z_values, key=z_values.get)
+            path = graph_utils.path_till_split(skeleton_graph, start_node)
+            skeleton_pts = np.array([list(skeleton_graph.nodes[node].values()) for node in path])
+
+            # Filter cloud for stem points
+            tree_points = np.array(tree_cloud.points)
+            labels = np.zeros(len(tree_points), dtype=bool)
+            mask_idx = np.where(tree_points[:,2] < skeleton_pts[:,2].max())[0]
+            
+            # TODO Filter tree points
+            tree = KDTree(tree_points[mask_idx])
+            selection = set()
+            
+            # Get closest to h
+            num_ = int(np.linalg.norm(skeleton_pts[1]-skeleton_pts[0]) / 0.05)
+            skeleton_pts = np.linspace(start=skeleton_pts[0], stop=skeleton_pts[-1], num=num_)
+            for result in tree.query_ball_point(skeleton_pts, .75):
+                selection.update(result)
+            selection = mask_idx[list(selection)]
+            labels[selection] = True
+
+            return labels
+
+        except Exception as e:
+            print('Error at %s', 'tree_utils error', exc_info=e)
+            return None
     
