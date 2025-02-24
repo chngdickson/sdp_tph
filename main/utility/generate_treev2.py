@@ -44,32 +44,24 @@ def crop_treeWithBBox(pcd, coord, expand_xy, zminmax:list=[-15,15]):
     
 # Under the assumption that the library works
 def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:list=[-15,15], iters:int=0):
-    # xc, yc = coord[0], -coord[1]
-    # ex = radius_expand
-    # zmin, zmax = zminmax
-    # min_bound = (xc-ex, yc-ex, zmin)
-    # max_bound = (xc+ex, yc+ex, zmax)
-    # bbox = o3d.geometry.AxisAlignedBoundingBox(min_bound=min_bound, max_bound=max_bound)
-    # tree_with_gnd = grd_pcd.crop(bbox)
-    # tree_with_gnd = tree_with_gnd.remove_non_finite_points()
-    # if len(np.asarray(tree_with_gnd.points)) < 1000:
-    #     return None
     tree_with_gnd = crop_treeWithBBox(grd_pcd, coord, radius_expand, zminmax)
-    grd, non_grd = csf_py(
-        tree_with_gnd, 
-        return_non_ground = "both", 
-        bsloopSmooth = True, 
-        cloth_res = 15.0, 
-        threshold= 2.0, 
-        rigidness=2,
-        iterations=1000
-    )
-    xyz = np.asarray(non_grd.points)
+    if tree_with_gnd is None:
+        return None
+    # grd, non_grd = csf_py(
+    #     tree_with_gnd, 
+    #     return_non_ground = "both", 
+    #     bsloopSmooth = True, 
+    #     cloth_res = 15.0, 
+    #     threshold= 2.0, 
+    #     rigidness=2,
+    #     iterations=1000
+    # )
+    xyz = np.asarray(tree_with_gnd.points)
     if not xyz.size:
         return None
     z_min_non_gnd = xyz[:,2].min()
-    non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min_non_gnd+2)[0])
-    xyz = np.asarray(non_grd.points)
+    tree_with_gnd = tree_with_gnd.select_by_index(np.where(xyz[:,2]<z_min_non_gnd+2)[0])
+    xyz = np.asarray(tree_with_gnd.points)
     xyz = xyz[:, np.isfinite(xyz).any(axis=0)]    
     assert np.all(np.isfinite(xyz)), f"apparently not all is finite {np.all(np.isfinite(xyz))}"
     if not xyz.size:
