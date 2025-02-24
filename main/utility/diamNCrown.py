@@ -23,7 +23,7 @@ class AdTree_cls():
     def surface_variation_filter(self, pcd, radius, threshold):
         """Compute surface variation of point cloud."""
         pcd.estimate_covariances(
-            search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=radius, max_nn=2))
+            search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=radius, max_nn=5))
         eig_val, _ = np.linalg.eig(np.asarray(pcd.covariances))
         eig_val = np.sort(eig_val, axis=1)
         sv = eig_val[:,0] / eig_val.sum(axis=1)
@@ -47,7 +47,7 @@ class AdTree_cls():
             mask = o3d_utils.curvature_filter(pcd_, .075, min1=20, min2=35)
             ind = np.hstack([trace[i] for i in ind_[mask]])
         else:
-            mask = self.surface_variation_filter(pcd_, .075, .15)
+            mask = self.surface_variation_filter(pcd_, .09, .15)
             ind = np.hstack([trace[i] for i in ind_[mask]])
 
         labels[ind] = Labels.WOOD
