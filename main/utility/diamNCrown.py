@@ -119,6 +119,7 @@ class AdTree_cls():
             print("starting point",start_pt)
             print("temp_end", end_temp)
             print("real_end", end_pt)
+            print("max_z",tree_points[mask_idx][:,2].max())
             
             # Get closest to h
             num_ = int(height / 0.05)
