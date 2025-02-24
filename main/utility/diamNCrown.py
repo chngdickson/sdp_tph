@@ -96,7 +96,7 @@ class AdTree_cls():
     def separate_via_dbscan(self, tree_cloud):
         dbscan(tree_cloud)
     
-    def path_unsplit(graph, start_node):
+    def path_unsplit(self, graph, start_node):
         path = [start_node]
         while graph.out_degree(path[-1]) == 1:
             for node in graph.successors(path[-1]):
