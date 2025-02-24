@@ -47,7 +47,7 @@ def crop_treeWithBBox(pcd, coord, expand_xy, zminmax:list=[-15,15]):
         return pcd
     
 # Under the assumption that the library works
-def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:list=[-15,15], iters:int=0):
+def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:list=[-15,15], iters:int=0, height_incre=4):
     tree_with_gnd = crop_treeWithBBox(grd_pcd, coord, radius_expand, zminmax)
     if tree_with_gnd is None:
         return None
@@ -62,7 +62,7 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
             tree_with_gnd, 
             return_non_ground = "non_ground", 
             bsloopSmooth = True, 
-            cloth_res = 0.5, 
+            cloth_res = 15.0, 
             threshold= 2.0, 
             rigidness=1,
             iterations=500
@@ -81,7 +81,7 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
             return None
 
         if iters < 1:
-            return find_centroid_from_Trees(grd_pcd, (xnew, -ynew), 2, zminmax, iters+1)
+            return find_centroid_from_Trees(grd_pcd, (xnew, -ynew), 2, zminmax, iters+1, height_incre)
         else:
             return (xnew, -ynew)
     # if centroid is None:
@@ -158,7 +158,7 @@ class TreeGen():
             # Split each coord to multi-sections and find the one with highest confidence
             h_loop = h_arr_pcd[:-1] 
             w_loop = w_arr_pcd[:-1]
-            coord = find_centroid_from_Trees(non_grd,coord,2, [z_min, z_max])
+            coord = find_centroid_from_Trees(non_grd,coord,2, [z_min, z_max], height_incre=4)
             if coord is None:
                 continue
             for i, h in enumerate(h_loop):
@@ -200,5 +200,5 @@ class TreeGen():
                 print("h_detected",h>0)
                 # Perform Operations
                 # new_coord = find_centroid_from_Trees(pcd,coord_list[0],3, [z_min, z_max])
-                # regenerate_Tree(pcd, coord, 5, [z_min, z_max])
+                regenerate_Tree(pcd, coord, 5, [z_min, z_max], h_incre=4)
         print("\n\n\n",total_detected,total_detected)
