@@ -109,7 +109,7 @@ def regenerate_Tree(pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[
     
     # Split the tree to Multiple Instances and recreate the tree
     n_splits = 10
-    h_diff = z.max()-z.min()/n_splits
+    h_diff = (z.max()-z.min())/n_splits
     tol = 0.4
     
     temp_tree = None
