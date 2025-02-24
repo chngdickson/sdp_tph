@@ -92,14 +92,21 @@ class AdTree_cls():
     
     def separate_via_dbscan(self, tree_cloud):
         dbscan(tree_cloud)
-        
+    
+    def path_unsplit(graph, start_node):
+        path = [start_node]
+        while graph.out_degree(path[-1]) == 1:
+            for node in graph.successors(path[-1]):
+                path.append(node)
+        return path
     def skeleton_split(self, tree_cloud, skeleton_graph, height):
         """Function to split the stem from the crown using the reconstructed tree skeleton."""
         try:
             # get start node and retrieve path
             z_values = nx.get_node_attributes(skeleton_graph, 'z')
             start_node = min(z_values, key=z_values.get)
-            path = graph_utils.path_till_split(skeleton_graph, start_node)
+            path = self.path_unsplit(skeleton_graph, start_node)
+            # path = graph_utils.path_till_split(skeleton_graph, start_node) # I got a feeling u gotta go
             skeleton_pts = np.array([list(skeleton_graph.nodes[node].values()) for node in path])
 
             # Filter cloud for stem points
