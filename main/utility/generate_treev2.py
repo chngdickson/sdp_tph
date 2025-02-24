@@ -8,7 +8,7 @@ import open3d as o3d
 from tqdm import tqdm
 import math
 import statistics
-from scipy.cluster.vq import kmeans2
+from scipy.cluster.vq import kmeans2, kmeans
 from sklearn.cluster import DBSCAN
 from .csf_py import csf_py
 """
@@ -56,12 +56,11 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     z_min_non_gnd = xyz[:,2].min()
     non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min_non_gnd+2)[0])
     xyz = np.asarray(non_grd.points)
-    xyz = xyz[:, ~np.isnan(xyz).any(axis=0)]
     xyz = xyz[:, np.isfinite(xyz).any(axis=0)]
     if not xyz.size:
         return None
     else:
-        centroid, label_ = kmeans2(xyz[:,0:2],k=1)
+        centroid, label_ = kmeans(xyz[:,0:2],k=1)
         xnew,ynew = centroid[0]
 
         if iters < 1:
