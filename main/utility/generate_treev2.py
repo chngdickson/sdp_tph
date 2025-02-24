@@ -52,10 +52,22 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     if tree_with_gnd is None:
         return None
     xyz = np.asarray(tree_with_gnd.points)
-    if not xyz.size:
-        return None
-    z_min_non_gnd = xyz[:,2].min()
-    tree_with_gnd = tree_with_gnd.select_by_index(np.where(xyz[:,2]<z_min_non_gnd+2)[0])
+    tol=0.3
+    height_incre = 3
+    z_vals = xyz[:,2]
+    z_min = z_vals.min()
+    tree_with_gnd = tree_with_gnd.select_by_index(np.where(z_vals<z_min+height_incre)[0])
+    if z_vals.mean() < (z_min+ (height_incre*tol)):
+        tree_with_gnd = csf_py(
+            tree_with_gnd, 
+            return_non_ground = "non_ground", 
+            bsloopSmooth = True, 
+            cloth_res = 15.0, 
+            threshold= 2.0, 
+            rigidness=2,
+            iterations=1000
+        )  
+    
     xyz = np.asarray(tree_with_gnd.points)
     xyz = xyz[:, np.isfinite(xyz).any(axis=0)]    
     assert np.all(np.isfinite(xyz)), f"apparently not all is finite {np.all(np.isfinite(xyz))}"
