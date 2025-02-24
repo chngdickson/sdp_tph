@@ -52,6 +52,8 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min+2)[0])
     xyz = np.asarray(non_grd.points)
     centroid, label_ = kmeans2(xyz[:,0:2],k=1)
+    if centroid is None:
+        return None
     xnew,ynew = centroid[0]
     if iters < 1:
         find_centroid_from_Trees(grd_pcd, (xnew, -ynew), 2, zminmax, iters+1)
@@ -113,6 +115,8 @@ class TreeGen():
             h_loop = h_arr_pcd[:-1] 
             w_loop = w_arr_pcd[:-1]
             coord = find_centroid_from_Trees(pcd,coord,3, [z_min, z_max])
+            if coord is None:
+                continue
             for i, h in enumerate(h_loop):
                 for j,w in enumerate(w_loop):
                     min_x, max_x = w, w+w_increment+w_increment/4
