@@ -10,8 +10,8 @@ from tqdm import tqdm
 import math
 import statistics
 from scipy.cluster.vq import kmeans2, kmeans
-from sklearn.cluster import DBSCAN
 from .csf_py import csf_py
+from .o3d_extras import save_pointcloud
 """
 1. Bounding Box Done
 2. Perform object detection Done
@@ -188,6 +188,7 @@ class TreeGen():
                 # Perform Operations
                 # new_coord = find_centroid_from_Trees(pcd,coord_list[0],3, [z_min, z_max])
                 singular_tree = regenerate_Tree(pcd, coord, 5, [z_min, z_max], h_incre=4)
-                self.adTreeCls.separate_via_dbscan(singular_tree)
+                save_pointcloud(singular_tree, f"{self.sideViewOut}/{self.pcd_name}_{i}.pcd")
+                # self.adTreeCls.separate_via_dbscan(singular_tree)
                 # self.adTreeCls.segment_tree(singular_tree)
         print("\n\n\n",total_detected,total_detected)

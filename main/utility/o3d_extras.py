@@ -18,3 +18,7 @@ def dbscan(tree_cloud, eps=0.5, min_points=10):
     colors[labels < 0] = 0
     tree_cloud.colors = o3d.utility.Vector3dVector(colors[:, :3])
     o3d.visualization.draw_geometries([tree_cloud])
+    
+
+def save_pointcloud(tree_cloud, filename):
+    o3d.io.write_point_cloud(filename, tree_cloud, "pcd")
