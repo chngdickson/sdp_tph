@@ -102,13 +102,23 @@ def regenerate_Tree(pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[
         ) 
     # 2. Combine Tree again after performing csf filter
     tree = tree_bark + tree_without_grd
-    
+    z = np.asarray(tree.points)[:,2]
     # 3. Cylinder Fit the Tree
     distances = np.linalg.norm(np.asarray(tree.points)[:,0:2] - np.array([xc, yc]), axis=1)
     tree = tree.select_by_index(np.where(distances<=radius_expand)[0])
     
     # Split the tree to Multiple Instances and recreate the tree
-    return tree
+    h_diff = z.max()-z.min()/9
+    tol = 0.4
+    n_splits = 9
+    temp_tree = None
+    for i, h in enumerate(np.linspace(z.min(),z.max(), n_splits)):
+        r_ex = (i/n_splits)*radius_expand if i/n_splits >= tol else tol*radius_expand
+        if temp_tree is None:
+            temp_tree = crop_treeWithBBox(tree, center_coord, r_ex, [h, h+h_diff])
+        else:
+            temp_tree += crop_treeWithBBox(tree, center_coord, r_ex, [h, h+h_diff])
+    return temp_tree
     
     # o3d.cuda.pybind.visualization.draw_geometries([tree])
     
@@ -188,7 +198,7 @@ class TreeGen():
                 # Perform Operations
                 # new_coord = find_centroid_from_Trees(pcd,coord_list[0],3, [z_min, z_max])
                 singular_tree = regenerate_Tree(pcd, coord, 5, [z_min, z_max], h_incre=4)
-                save_pointcloud(singular_tree, f"{self.sideViewOut}/{self.pcd_name}_{index}.ply")
+                # save_pointcloud(singular_tree, f"{self.sideViewOut}/{self.pcd_name}_{index}.ply")
                 # self.adTreeCls.separate_via_dbscan(singular_tree)
-                # self.adTreeCls.segment_tree(singular_tree)
+                self.adTreeCls.segment_tree(singular_tree)
         print("\n\n\n",total_detected,total_detected)

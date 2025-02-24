@@ -48,7 +48,7 @@ class AdTree_cls():
             mask = o3d_utils.curvature_filter(pcd_, .075, min1=20, min2=35)
             ind = np.hstack([trace[i] for i in ind_[mask]])
         else:
-            mask = self.surface_variation_filter(pcd_, .09, .15)
+            mask = self.surface_variation_filter(pcd_, .15, .2)
             ind = np.hstack([trace[i] for i in ind_[mask]])
 
         labels[ind] = Labels.WOOD
@@ -57,10 +57,8 @@ class AdTree_cls():
     
     def segment_tree(self, tree_cloud):
         stem_cloud, crown_cloud = self.tree_separate(tree_cloud, self.adTree_exe, filter_leaves="surface_variation")
-        crown_mesh_hull, volume = tree_utils.crown_to_mesh(crown_cloud, method='alphashape')
-        o3d_utils.plot_mesh(crown_mesh_hull)
-        stem_mesh_hull, volume = tree_utils.crown_to_mesh(stem_cloud, method='alphashape')
-        o3d_utils.plot_mesh(stem_mesh_hull)
+        # crown_mesh_hull, volume = tree_utils.crown_to_mesh(crown_cloud, method='alphashape')
+        # stem_mesh_hull, volume = tree_utils.crown_to_mesh(stem_cloud, method='alphashape')
         o3d.visualization.draw_geometries([stem_cloud])
         o3d.visualization.draw_geometries([crown_cloud])
         
