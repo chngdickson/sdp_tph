@@ -52,7 +52,7 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     )
     xyz = np.asarray(non_grd.points)
     z_min_non_gnd = xyz[:,2].min()
-    non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min_non_gnd+2)[0])
+    non_grd = non_grd.select_by_index(np.where(xyz[:,2]<z_min_non_gnd+2)[0]).remove_non_finite_points()
     xyz = np.asarray(non_grd.points)
     centroid, label_ = kmeans2(xyz[:,0:2],k=1)
     if centroid is None:
