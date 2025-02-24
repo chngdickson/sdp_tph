@@ -114,7 +114,7 @@ def regenerate_Tree(pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[
     
     temp_tree = None
     for i, h in enumerate(np.linspace(z.min(),z.max(), n_splits, endpoint=False)):
-        r_ex = (i/n_splits)*radius_expand if i/n_splits >= tol else tol*radius_expand
+        r_ex = (i/n_splits)*radius_expand*1.5 if i/n_splits >= tol else tol*radius_expand*1.5
         if temp_tree is None:
             temp_tree = crop_treeWithBBox(tree, center_coord, r_ex, [h-h_diff, h+h_diff])
         else:
