@@ -186,5 +186,5 @@ class TreeGen():
                 # Perform Operations
                 # new_coord = find_centroid_from_Trees(pcd,coord_list[0],3, [z_min, z_max])
                 singular_tree = regenerate_Tree(pcd, coord, 5, [z_min, z_max], h_incre=4)
-                self.adTreeCls.reconstruct_skeleton(singular_tree)
+                self.adTreeCls.segment_tree(singular_tree)
         print("\n\n\n",total_detected,total_detected)

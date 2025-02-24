@@ -7,7 +7,6 @@ import adTreeutils.tree_utils as tree_utils
 import adTreeutils.o3d_utils as o3d_utils
 from labels import Labels
 from config import Paths
-adTree_exe = Paths.get_adtree()
 
 
 class AdTree_cls():
@@ -53,5 +52,10 @@ class AdTree_cls():
         labels[ind] = Labels.WOOD
 
         return labels
+    
     def segment_tree(self, tree_cloud):
-        pass
+        stem_cloud, crown_cloud = tree_utils.tree_separate(tree_cloud, self.adTree_exe)
+        crown_mesh_hull, volume = tree_utils.crown_to_mesh(crown_cloud, method='alphashape')
+        o3d_utils.plot_mesh(crown_mesh_hull)
+        stem_mesh_hull, volume = tree_utils.crown_to_mesh(stem_cloud, method='alphashape')
+        o3d_utils.plot_mesh(stem_mesh_hull)
