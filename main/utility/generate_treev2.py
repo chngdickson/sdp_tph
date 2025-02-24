@@ -62,7 +62,7 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
             tree_with_gnd, 
             return_non_ground = "non_ground", 
             bsloopSmooth = True, 
-            cloth_res = 15.0, 
+            cloth_res = 0.5, 
             threshold= 2.0, 
             rigidness=1,
             iterations=500
