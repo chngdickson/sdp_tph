@@ -61,8 +61,9 @@ def find_centroid_from_Trees(grd_pcd, coord:tuple, radius_expand:int=3, zminmax:
     # xyz = xyz[:, np.isfinite(xyz).any(axis=0)]
     # xyz = xyz[np.isfinite(xyz).any(axis=1)]
     xy = clean(xyz[:,0:2])
+    print(xy.shape)
     assert np.all(np.isfinite(xy)), f"apparently not all is finite {np.all(np.isfinite(xyz))}"
-    if not xyz.size:
+    if not xy.size:
         return None
     else:
         centroid, label_ = kmeans2(xy,k=1)
