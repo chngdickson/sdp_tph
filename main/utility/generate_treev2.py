@@ -95,16 +95,16 @@ def regenerate_Tree(grd_pcd, center_coord:tuple, radius_expand:int=5, zminmax:li
     tree_with_gnd = grd_pcd.crop(bbox)
     distances = np.linalg.norm(np.asarray(tree_with_gnd.points)[:,0:2] - np.array([xc, yc]), axis=1)
     tree_with_gnd = tree_with_gnd.select_by_index(np.where(distances<=radius_expand)[0])
-    grd, non_grd = csf_py(
-        tree_with_gnd, 
-        return_non_ground = "both", 
-        bsloopSmooth = True, 
-        cloth_res = 15.0, 
-        threshold= 2.0, 
-        rigidness=2,
-        iterations=1000
-    )     
-    o3d.cuda.pybind.visualization.draw_geometries([non_grd])
+    # grd, non_grd = csf_py(
+    #     tree_with_gnd, 
+    #     return_non_ground = "both", 
+    #     bsloopSmooth = True, 
+    #     cloth_res = 15.0, 
+    #     threshold= 2.0, 
+    #     rigidness=2,
+    #     iterations=1000
+    # )     
+    o3d.cuda.pybind.visualization.draw_geometries([tree_with_gnd])
     
 class TreeGen():
     def __init__(self, yml_data, sideViewOut, pcd_name):
