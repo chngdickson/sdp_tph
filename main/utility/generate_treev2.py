@@ -1,7 +1,7 @@
 from .pcd2img import *
 from .get_coords import *
 from .generate_tree import get_h_from_each_tree_slice, get_tree_from_coord
-from .diamNCrown import AdTree_cls
+# from .diamNCrown import AdTree_cls
 from .yolo_detect import Detect
 import cv2
 import numpy as np

@@ -171,34 +171,13 @@ export QT_QPA_PLATFORM=offscreen\n\
 cd /opt/installConda/CloudComPy310/doc/PythonAPI_test\n\
 ctest" > /execTests.sh && chmod +x /execTests.sh
 
-# Install the remainder haiyaa
-# RUN . /root/anaconda3/etc/profile.d/conda.sh && \
-#     conda activate CloudComPy310 && \
-#     cd /root/sdp_tph/submodules/CSF && python3 setup.py build && python3 setup.py install && \
-#     python3 -m pip install --no-cache-dir torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121 && \
-#     cd /root/Open3D/build && make pip-package && python3 -m pip install lib/python_package/pip_package/open3d-0.18.0+0f06a149c-cp310-cp310-manylinux_2_35_x86_64.whl && \
-#     cd /root/sdp_tph && \
-#     python3 -m pip install --no-cache-dir -r submodules/PCTM/requirements.txt && \
-#     python3 -m pip install --no-cache-dir -r main/yolov5/requirements.txt
-
-# RUN . /root/anaconda3/etc/profile.d/conda.sh && \
-#     conda activate CloudComPy310 && \
-#     python3 -m pip uninstall -y open3d && \
-#     cd /root/Open3D/build && make pip-package && python3 -m pip install lib/python_package/pip_package/open3d-0.18.0+0f06a149c-cp310-cp310-manylinux_2_35_x86_64.whl 
-
 # RUN echo "#!/bin/bash\n\
 # . /root/anaconda3/etc/profile.d/conda.sh\n\
 # cd /opt/installConda/CloudComPy310\n\
 # . bin/condaCloud.sh activate CloudComPy310\n\
 # "> /entrypoint.sh && chmod +x /entrypoint.sh
 ENTRYPOINT []
-# . /root/anaconda3/etc/profile.d/conda.sh 
-# . /opt/installConda/CloudComPy310/bin/condaCloud.sh activate CloudComPy310
-# RUN pip install laspy
-# ENTRYPOINT []
-# CMD []
-# USER 0
-# WORKDIR /
+
 # ENTRYPOINT ["python","./main.py"]
 # CMD ["file_dir" "input_file_name" "file_type"]
 
