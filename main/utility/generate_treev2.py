@@ -12,6 +12,8 @@ import statistics
 from scipy.cluster.vq import kmeans2, kmeans
 from .csf_py import csf_py
 from .o3d_extras import save_pointcloud
+import cloudComPy as cc      
+cc.initCC() 
 """
 1. Bounding Box Done
 2. Perform object detection Done
