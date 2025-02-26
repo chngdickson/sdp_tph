@@ -25,6 +25,7 @@ dschng/tph /bin/bash
 ```
 
 ```bash
+. /opt/installConda/CloudComPy310/bin/condaCloud.sh activate CloudComPy310 &&
 cd /root/sdp_tph/main/ && git fetch && git switch testings
 git pull --recurse-submodules && python3 main2.py /root/pcds/ p01e_B .las
 
