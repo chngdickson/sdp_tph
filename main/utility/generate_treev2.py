@@ -144,7 +144,7 @@ class TreeGen():
         yolov5_folder_pth = yml_data["yolov5"]["yolov5_pth"]
         self.obj_det_short = Detect(yolov5_folder_pth, side_view_model_pth, img_size=self.side_view_img_size)
         self.obj_det_tall = Detect(yolov5_folder_pth, side_view_model_pth, img_size=self.side_view_img_size_tall)
-        self.adTreeCls = AdTree_cls()
+        # self.adTreeCls = AdTree_cls()
     
     def process_each_coord(self, pcd, grd_pcd, non_grd, coords, w_lin_pcd, h_lin_pcd):
         # Init

@@ -134,7 +134,7 @@ RUN . /root/anaconda3/etc/profile.d/conda.sh && \
     conda activate CloudComPy310 && \
     conda config --add channels conda-forge && \
     conda config --set channel_priority strict && \
-    conda install -y "boost=1.74" "cgal=5.4" cmake draco ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.26.4" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 quaternion "qhull=2020.2" "qt=5.15.4" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2"
+    conda install -y "boost=1.74" "cgal=5.4" cmake draco ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.26.4" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 quaternion "qhull=2020.2" "qt=5.15.4" "scipy=1.10.1" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2"
 
 RUN apt-get update && apt-get install -y gfortran g++ make libgl1 libgl-dev libqt5svg5-dev libqt5opengl5-dev qttools5-dev qttools5-dev-tools libqt5websockets5-dev qtbase5-dev qt5-qmake
 
@@ -151,12 +151,10 @@ RUN . /root/anaconda3/etc/profile.d/conda.sh && \
     cd /root/sdp_tph/submodules/CSF && python3 setup.py build && python3 setup.py install  
 
 
-# RUN . /root/anaconda3/etc/profile.d/conda.sh && \
-#     conda activate CloudComPy310 && \
-#     cd /root/sdp_tph && \
-#     python3 -m pip install --ignore-installed --no-cache-dir -r submodules/PCTM/requirements.txt && \
-#     python3 -m pip install --ignore-installed --no-cache-dir -r main/yolov5/requirements.txt && \
-#     python3 -m pip install --ignore-installed --no-cache-dir opencv-python 
+RUN . /root/anaconda3/etc/profile.d/conda.sh && \
+    conda activate CloudComPy310 && \
+    cd /root/sdp_tph && \
+    python3 -m pip install --no-cache-dir laspy[lazrs,laszip] scikit-learn seaborn
 
 
 WORKDIR /root/CloudComPy
