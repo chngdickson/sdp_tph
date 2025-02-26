@@ -134,7 +134,7 @@ RUN . /root/anaconda3/etc/profile.d/conda.sh && \
     conda activate CloudComPy310 && \
     conda config --add channels conda-forge && \
     conda config --set channel_priority strict && \
-    conda install -y "boost=1.74" "cgal=5.4" cmake draco ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 quaternion "qhull=2020.2" "qt=5.15.4" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2"
+    conda install -y "boost=1.74" "cgal=5.4" cmake draco ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.26.4" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 quaternion "qhull=2020.2" "qt=5.15.4" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2"
 
 RUN apt-get update && apt-get install -y gfortran g++ make libgl1 libgl-dev libqt5svg5-dev libqt5opengl5-dev qttools5-dev qttools5-dev-tools libqt5websockets5-dev qtbase5-dev qt5-qmake
 
@@ -142,6 +142,22 @@ RUN . /root/anaconda3/etc/profile.d/conda.sh && \
     conda activate CloudComPy310 && \
     cd && rm -rf CloudComPy && git clone --recurse-submodules https://github.com/chngdickson/CloudComPy.git && \
     cd CloudComPy 
+
+RUN . /root/anaconda3/etc/profile.d/conda.sh && \
+    conda activate CloudComPy310 && \
+    cd && \
+    python3 -m pip install --ignore-installed --no-cache-dir torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121 && \
+    cd /root/Open3D/build && make pip-package && python3 -m pip install lib/python_package/pip_package/open3d-0.18.0+0f06a149c-cp310-cp310-manylinux_2_35_x86_64.whl && \
+    cd /root/sdp_tph/submodules/CSF && python3 setup.py build && python3 setup.py install  
+
+
+# RUN . /root/anaconda3/etc/profile.d/conda.sh && \
+#     conda activate CloudComPy310 && \
+#     cd /root/sdp_tph && \
+#     python3 -m pip install --ignore-installed --no-cache-dir -r submodules/PCTM/requirements.txt && \
+#     python3 -m pip install --ignore-installed --no-cache-dir -r main/yolov5/requirements.txt && \
+#     python3 -m pip install --ignore-installed --no-cache-dir opencv-python 
+
 
 WORKDIR /root/CloudComPy
 RUN git pull origin master
@@ -156,19 +172,19 @@ cd /opt/installConda/CloudComPy310/doc/PythonAPI_test\n\
 ctest" > /execTests.sh && chmod +x /execTests.sh
 
 # Install the remainder haiyaa
-RUN . /root/anaconda3/etc/profile.d/conda.sh && \
-    conda activate CloudComPy310 && \
-    cd /root/sdp_tph/submodules/CSF && python3 setup.py build && python3 setup.py install && \
-    python3 -m pip install --no-cache-dir torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121 && \
-    cd /root/Open3D/build && make pip-package && python3 -m pip install lib/python_package/pip_package/open3d-0.18.0+0f06a149c-cp310-cp310-manylinux_2_35_x86_64.whl && \
-    cd /root/sdp_tph && \
-    python3 -m pip install --no-cache-dir -r submodules/PCTM/requirements.txt && \
-    python3 -m pip install --no-cache-dir -r main/yolov5/requirements.txt
+# RUN . /root/anaconda3/etc/profile.d/conda.sh && \
+#     conda activate CloudComPy310 && \
+#     cd /root/sdp_tph/submodules/CSF && python3 setup.py build && python3 setup.py install && \
+#     python3 -m pip install --no-cache-dir torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121 && \
+#     cd /root/Open3D/build && make pip-package && python3 -m pip install lib/python_package/pip_package/open3d-0.18.0+0f06a149c-cp310-cp310-manylinux_2_35_x86_64.whl && \
+#     cd /root/sdp_tph && \
+#     python3 -m pip install --no-cache-dir -r submodules/PCTM/requirements.txt && \
+#     python3 -m pip install --no-cache-dir -r main/yolov5/requirements.txt
 
-RUN . /root/anaconda3/etc/profile.d/conda.sh && \
-    conda activate CloudComPy310 && \
-    python3 -m pip uninstall -y open3d && \
-    cd /root/Open3D/build && make pip-package && python3 -m pip install lib/python_package/pip_package/open3d-0.18.0+0f06a149c-cp310-cp310-manylinux_2_35_x86_64.whl 
+# RUN . /root/anaconda3/etc/profile.d/conda.sh && \
+#     conda activate CloudComPy310 && \
+#     python3 -m pip uninstall -y open3d && \
+#     cd /root/Open3D/build && make pip-package && python3 -m pip install lib/python_package/pip_package/open3d-0.18.0+0f06a149c-cp310-cp310-manylinux_2_35_x86_64.whl 
 
 # RUN echo "#!/bin/bash\n\
 # . /root/anaconda3/etc/profile.d/conda.sh\n\
