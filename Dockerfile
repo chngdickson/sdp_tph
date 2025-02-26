@@ -97,15 +97,76 @@ RUN mkdir -p /root/AdTree/Release
 WORKDIR /root/AdTree/Release
 RUN cmake -DCMAKE_BUILD_TYPE=Release .. && make
 
+
 # Make sure LFS has all the files
 WORKDIR /root
 RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash && apt-get install -y git-lfs
 WORKDIR /root/sdp_tph/main
 RUN git fetch && git checkout testings && git lfs pull && git pull
-
 RUN mkdir -p /usr/local/app/bin && \
     cp /root/AdTree/Release/bin/AdTree /usr/local/app/bin/AdTree
-ENTRYPOINT []
+
+
+
+# Install Anaconda For CloudComPy OMG I GOTTA INSTALL the top bits again ahhhh
+WORKDIR /root
+RUN apt-get install bzip2 
+RUN wget https://repo.continuum.io/archive/Anaconda3-2024.10-1-Linux-x86_64.sh
+RUN bash Anaconda3-2024.10-1-Linux-x86_64.sh -b
+RUN rm Anaconda3-2024.10-1-Linux-x86_64.sh
+
+ENV PATH /root/anaconda3/bin:$PATH
+
+RUN conda update conda -y
+RUN conda update -y -n base -c defaults conda
+RUN conda update --all
+
+
+
+# Install CloudComPy
+# RUN git clone --recurse-submodules https://github.com/chngdickson/CloudComPy.git
+WORKDIR /root
+
+RUN . /root/anaconda3/etc/profile.d/conda.sh && \
+    conda activate && \
+    conda update -y -n base -c defaults conda && \
+    conda create -y --name CloudComPy310 python=3.10 && \
+    conda activate CloudComPy310 && \
+    conda config --add channels conda-forge && \
+    conda config --set channel_priority strict && \
+    conda install -y "boost=1.74" "cgal=5.4" cmake draco ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 quaternion "qhull=2020.2" "qt=5.15.4" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2"
+
+RUN apt-get update && apt-get install -y gfortran g++ make libgl1 libgl-dev libqt5svg5-dev libqt5opengl5-dev qttools5-dev qttools5-dev-tools libqt5websockets5-dev qtbase5-dev qt5-qmake
+
+RUN . /root/anaconda3/etc/profile.d/conda.sh && \
+    conda activate CloudComPy310 && \
+    cd && rm -rf CloudComPy && git clone --recurse-submodules https://github.com/chngdickson/CloudComPy.git && \
+    cd CloudComPy 
+
+WORKDIR /root/CloudComPy
+RUN git pull origin master
+WORKDIR /root
+RUN chmod +x /root/CloudComPy/building/genCloudComPy_Conda310_docker.sh && /root/CloudComPy/building/genCloudComPy_Conda310_docker.sh
+RUN echo "#!/bin/bash\n\
+. /root/anaconda3/etc/profile.d/conda.sh\n\
+cd /opt/installConda/CloudComPy310\n\
+. bin/condaCloud.sh activate CloudComPy310\n\
+export QT_QPA_PLATFORM=offscreen\n\
+cd /opt/installConda/CloudComPy310/doc/PythonAPI_test\n\
+ctest" > /execTests.sh && chmod +x /execTests.sh
+
+# Install the remainder haiyaa
+RUN . /root/anaconda3/etc/profile.d/conda.sh && \
+    conda activate CloudComPy310 && \
+    cd /root/sdp_tph/submodules/CSF && python3 setup.py build && python3 setup.py install && \
+    python3 -m pip install --no-cache-dir -r submodules/PCTM/requirements.txt && \
+    python3 -m pip install --no-cache-dir torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121 && \
+    cd /root/Open3D/build && make pip-package && python3 -m pip install lib/python_package/pip_package/open3d-0.18.0+0f06a149c-cp310-cp310-manylinux_2_35_x86_64.whl && \
+    cd /root/sdp_tph && \
+    python3 -m pip install --no-cache-dir -r main/yolov5/requirements.txt
+ENTRYPOINT [""]
+# . /root/anaconda3/etc/profile.d/conda.sh 
+# . /opt/installConda/CloudComPy310/bin/condaCloud.sh activate CloudComPy310
 # RUN pip install laspy
 # ENTRYPOINT []
 # CMD []

@@ -123,6 +123,8 @@ def regenerate_Tree(pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[
                 temp_tree+=a
     return temp_tree
     
+def find_trunk(pcd, center_coord, r, h):
+    
     # o3d.cuda.pybind.visualization.draw_geometries([tree])
     
 class TreeGen():

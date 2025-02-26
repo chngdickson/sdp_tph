@@ -25,6 +25,9 @@ dschng/tph /bin/bash
 ```
 
 ```bash
+cd /root/sdp_tph/main/ && git fetch && git switch testings
+git pull --recurse-submodules && python3 main2.py /root/pcds/ p01e_B .las
+
 python3 main.py /root/pcds/ p01 .las
 ```
 
