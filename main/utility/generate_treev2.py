@@ -13,7 +13,8 @@ from scipy.cluster.vq import kmeans2, kmeans
 from .csf_py import csf_py
 from .o3d_extras import save_pointcloud
 import cloudComPy as cc      
-cc.initCC() 
+cc.initCC()
+
 """
 1. Bounding Box Done
 2. Perform object detection Done
@@ -126,8 +127,10 @@ def regenerate_Tree(pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[
     return temp_tree
     
 def find_trunk(pcd, center_coord, r, h):
-    # o3d.cuda.pybind.visualization.draw_geometries([tree])
-    
+    # points = np.vstack((pcd.x, pcd.y, pcd.z)).T.astype(np.float32) 
+    points = np.asarray(pcd.points)
+    cloud = cc.ccPointCloud('cloud')
+    cloud.coordsFromNPArray_copy(points)
     pass
 
     
@@ -207,6 +210,7 @@ class TreeGen():
                 # Perform Operations
                 # new_coord = find_centroid_from_Trees(pcd,coord_list[0],3, [z_min, z_max])
                 singular_tree = regenerate_Tree(pcd, coord, 5, [z_min, z_max], h_incre=4)
+                find_trunk(singular_tree, coord, 3, h)
                 # save_pointcloud(singular_tree, f"{self.sideViewOut}/{self.pcd_name}_{index}.ply")
                 # self.adTreeCls.separate_via_dbscan(singular_tree)
                 # self.adTreeCls.segment_tree(singular_tree)
