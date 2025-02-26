@@ -130,12 +130,17 @@ def regenerate_Tree(pcd, center_coord:tuple, radius_expand:int=5, zminmax:list=[
     
 def find_trunk(pcd, center_coord, r, h):
     # points = np.vstack((pcd.x, pcd.y, pcd.z)).T.astype(np.float32) 
-    print(f"trunk works\n\n\n")
     points = np.asarray(pcd.points)
     cloud = cc.ccPointCloud('cloud')
     cloud.coordsFromNPArray_copy(points)
     
     ransac_params = cc.RANSAC_SD.RansacParams()
+    ransac_params.setPrimEnabled(cc.RANSAC_SD.RANSAC_PRIMITIVE_TYPES.RPT_CYLINDER,True)
+    ransac_params.setPrimEnabled(cc.RANSAC_SD.RANSAC_PRIMITIVE_TYPES.RPT_CONE,False)
+    ransac_params.setPrimEnabled(cc.RANSAC_SD.RANSAC_PRIMITIVE_TYPES.RPT_PLANE,False)
+    ransac_params.setPrimEnabled(cc.RANSAC_SD.RANSAC_PRIMITIVE_TYPES.RPT_SPHERE,False)
+    ransac_params.setPrimEnabled(cc.RANSAC_SD.RANSAC_PRIMITIVE_TYPES.RPT_TORUS,False)
+    print(ransac_params)
     ransac_params.optimizeForCloud(cloud)
     meshes, clouds = cc.RANSAC_SD.computeRANSAC_SD(cloud,ransac_params)
     pass
