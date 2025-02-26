@@ -12,8 +12,10 @@ import statistics
 from scipy.cluster.vq import kmeans2, kmeans
 from .csf_py import csf_py
 from .o3d_extras import save_pointcloud
-import cloudComPy as cc      
+import cloudComPy as cc
+import cloudComPy.RANSAC_SD  
 cc.initCC()
+
 
 """
 1. Bounding Box Done
@@ -131,6 +133,9 @@ def find_trunk(pcd, center_coord, r, h):
     points = np.asarray(pcd.points)
     cloud = cc.ccPointCloud('cloud')
     cloud.coordsFromNPArray_copy(points)
+    
+    ransac_params = cc.RANSAC_SD.RansacParams()
+    meshes, clouds = cc.RANSAC_SD.computeRANSAC_SD(cloud,ransac_params)
     pass
 
     
