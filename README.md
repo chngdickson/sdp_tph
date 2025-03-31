@@ -8,6 +8,7 @@ docker build \
 
 RUN
 ```bash
+xhost local:docker 
 docker run -it dschng/tph /bin/bash
 
 cd && docker run -it \
